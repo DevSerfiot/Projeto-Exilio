@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "id": "reg-001",
+      "title": "Registro de inicialização",
+      "summary": "Boot detectado com sucesso."
+    },
+    {
+      "id": "reg-014",
+      "title": "Registro de comunicação",
+      "summary": "Canal primário estável."
+    },
+    {
+      "id": "reg-032",
+      "title": "Registro de rastreamento",
+      "summary": "Ponto de referência localizado."
+    }
+  ]
+}

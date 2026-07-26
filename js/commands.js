@@ -1,5 +1,7 @@
 /* Terminal command pages and command handler */
 (function () {
+  const TERMINAL_PROMPT = 'root@exilio:~$';
+
   const terminalPages = {
     help: {
       title: 'Lista de comandos disponíveis',
@@ -8,6 +10,9 @@
         'help — Lista de comandos disponíveis',
         'about — História do Projeto Exílio',
         'logs — Registros encontrados',
+        'database — Banco de registros classificados',
+        'notifications — Todas as notificações geradas',
+        'contato — Gera notificação de tentativa de contato',
         'reg-001 — Registro de inicialização',
         'reg-014 — Registro de comunicação',
         'reg-032 — Registro de rastreamento',
@@ -24,11 +29,23 @@
         'timeline — Linha do tempo do projeto',
         'protocol — Protocolo de segurança',
         'credits — Créditos',
+        'history — Histórico recente',
+        'scan — Varredura assíncrona',
         'clear — Limpa o terminal',
         'reboot — Reinicia o sistema',
         'exit — Encerra a sessão',
         'start — Reinicia a animação de boot',
-        'play trailer — Reproduz o trailer'
+        'play trailer — Reproduz o trailer',
+        'ls — Lista arquivos e pastas do diretório atual',
+        'pwd — Mostra o diretório atual',
+        'cd <caminho> — Entra em um diretório',
+        'cat <arquivo> — Exibe o conteúdo de um arquivo',
+        'tree [caminho] — Mostra a árvore do filesystem',
+        'find <termo> [caminho] — Busca por nome',
+        'grep <termo> [caminho] — Busca conteúdo em arquivos',
+        'mkdir <diretório> — Cria um diretório',
+        'open <arquivo> — Abre um arquivo narrativo',
+        'help fs — Ajuda do módulo filesystem'
       ]
     },
     about: {
@@ -47,6 +64,30 @@
         'Registro 01 — Transmissão interrompida.',
         'Registro 02 — Sinais de presença anômala.',
         'Registro 03 — Mapa parcial do setor sul.'
+      ]
+    },
+    database: {
+      title: 'Banco de Registros',
+      description: 'Banco classificado com registros que podem estar corrompidos, ocultos, bloqueados ou criptografados.',
+      items: [
+        'Formato: Registro, Autor, Data, Nível de acesso, Status e Conteúdo.',
+        'Alguns registros exigem autenticação ou permanecem mascarados pelo sistema.'
+      ]
+    },
+    notifications: {
+      title: 'Notificações geradas',
+      description: 'Histórico completo das notificações emitidas pelo sistema, com cores diferentes por tipo.',
+      items: [
+        'Cada notificação é agrupada pelo tipo visual.',
+        'As entradas registradas ficam disponíveis mesmo depois de desaparecerem da tela.'
+      ]
+    },
+    contato: {
+      title: 'Tentativa de contato',
+      description: 'Um alerta de contato de rádio foi injetado no centro de notificações.',
+      items: [
+        'Use notifications para abrir o histórico completo.',
+        'Novos sinais podem surgir de forma automática durante a sessão.'
       ]
     },
     'reg-001': {
@@ -178,9 +219,12 @@
       title: 'Linha do tempo',
       description: 'A evolução do projeto segue em etapas de descoberta e expansão.',
       items: [
-        '2024 — Primeiros protótipos narrativos.',
-        '2025 — Estrutura terminal e estética consolidada.',
-        '2026 — Expansão para conteúdo interativo e comunidade.'
+        '2051 — Projeto iniciado.',
+        '2054 — Primeira missão.',
+        '2057 — Falha do reator.',
+        '2061 — Evacuação.',
+        '2064 — Silêncio.',
+        '2070 — Reconexão.'
       ]
     },
     protocol: {
@@ -201,6 +245,14 @@
         'Design — Frost + Alsyen',
         'Roteiro — Alsyen + Frost',
         'Agradecimentos especiais — Comunidade e apoiadores'
+      ]
+    },
+    history: {
+      title: 'Histórico recente',
+      description: 'Lista dos comandos digitados na sessão atual.',
+      items: [
+        'Use as setas para revisitar entradas anteriores.',
+        'O histórico é atualizado a cada comando enviado.'
       ]
     },
     map: {
@@ -253,10 +305,285 @@
         'O vídeo será exibido em uma seção dedicada.',
         'A experiência de narrativa continua em desenvolvimento.'
       ]
+    },
+    scan: {
+      title: 'Varredura assíncrona',
+      description: 'Uma rotina de diagnóstico foi iniciada com etapas sequenciais.',
+      items: [
+        'Sensores térmicos: calibrando.',
+        'Rede local: mapeando nós.',
+        'Banco de registros: validando consistência.'
+      ]
     }
   };
 
+  const COMMAND_DESCRIPTIONS = {
+    help: 'Lista todos os comandos',
+    about: 'Abre a história do projeto',
+    logs: 'Exibe registros encontrados',
+    database: 'Abre o banco de registros classificados',
+    notifications: 'Abre o histórico de notificações geradas',
+    contato: 'Dispara um alerta de tentativa de contato',
+    'reg-001': 'Mostra o registro REG-001',
+    'reg-014': 'Mostra o registro REG-014',
+    'reg-032': 'Mostra o registro REG-032',
+    'reg-089': 'Mostra o registro REG-089',
+    'reg-114': 'Mostra o registro REG-114',
+    'reg-198': 'Mostra o registro REG-198',
+    team: 'Abre a página da equipe',
+    download: 'Solicita senha para download',
+    discord: 'Mostra o link do Discord',
+    social: 'Abre as redes sociais',
+    status: 'Consulta o estado do sistema',
+    online: 'Consulta a conectividade',
+    archive: 'Abre o arquivo de registros',
+    timeline: 'Mostra a linha do tempo',
+    protocol: 'Exibe o protocolo de segurança',
+    credits: 'Lista os créditos',
+    history: 'Lista o histórico recente',
+    scan: 'Executa uma varredura assíncrona',
+    clear: 'Limpa a saída do terminal',
+    reboot: 'Reinicia o sistema',
+    exit: 'Encerra a sessão',
+    start: 'Reexecuta a animação de boot',
+    'play trailer': 'Prepara a reprodução do trailer',
+    ls: 'Lista arquivos e pastas do diretório atual',
+    pwd: 'Mostra o caminho atual',
+    cd: 'Navega entre diretórios',
+    cat: 'Exibe o conteúdo de um arquivo',
+    tree: 'Mostra a árvore de diretórios',
+    find: 'Busca por nome de arquivo ou pasta',
+    grep: 'Busca por texto dentro dos arquivos',
+    mkdir: 'Cria um diretório',
+    open: 'Abre um arquivo narrativo'
+  };
+
+  const COMMAND_PALETTE = Array.from(new Set(Object.keys(COMMAND_DESCRIPTIONS))).sort();
+
   const DOWNLOAD_PASSWORD_SECRET = 'NDg5OQ==';
+
+  const SECRET_COMMANDS = {
+    coffee: {
+      lines: [
+        '[EGG-01] A maquina range, cospe vapor e entrega um cafe amargo.',
+        'No fundo do copo, voce le: "fique acordado, o turno nunca termina".'
+      ]
+    },
+    exit: {
+      page: 'exit',
+      lines: [
+        '[EGG-02] Voce toca na saida, mas a estacao trava a porta por dentro.',
+        'Uma luz fraca pisca: "ninguem sai antes da ultima transmissao".'
+      ]
+    },
+    '42': {
+      lines: [
+        '[EGG-03] O terminal para por 4.2 segundos e responde com um ruido branco.',
+        'Depois, uma unica linha: "a resposta existe, a pergunta foi perdida".'
+      ]
+    },
+    'sudo reboot humanity': {
+      lines: [
+        '[EGG-04] Permissao recusada pelo nucleo etico.',
+        'Motivo: "humanidade em processo, reinicializacao indisponivel".'
+      ]
+    },
+    whoami: {
+      lines: [
+        '[EGG-05] user: root',
+        'echo interno: "nome valido, memoria incompleta".'
+      ]
+    },
+    hack: {
+      lines: [
+        '[EGG-06] Tentativa registrada. Firewall observando em silencio.',
+        'Uma janela abre e fecha sozinha: "voce esta sendo hackeado de volta".'
+      ]
+    },
+    override: {
+      lines: [
+        '[EGG-07] Override solicitado no barramento principal.',
+        'Resposta do sistema: "autoridade reconhecida, consciencia nao".'
+      ]
+    },
+    'wake up': {
+      lines: [
+        '[EGG-08] Sensores biologicos procuram um corpo que nao esta aqui.',
+        'Nada desperta. So a ventoinha continua respirando.'
+      ]
+    },
+    'knock knock': {
+      lines: [
+        '[EGG-09] Toc toc.',
+        'Do outro lado da blindagem, algo responde no mesmo ritmo.'
+      ]
+    },
+    'open sesame': {
+      lines: [
+        '[EGG-10] Cofre 7A tenta abrir e emperra no ultimo dente.',
+        'Log recuperado: "a senha certa no lugar errado".'
+      ]
+    },
+    'hello there': {
+      lines: [
+        '[EGG-11] Canal de radio antigo acorda com estatica.',
+        'Uma voz distante responde: "general kenobi... sinal incompleto".'
+      ]
+    },
+    'ping void': {
+      lines: [
+        '[EGG-12] Enviando 4 pacotes para o vazio...',
+        'Resposta: 0 recebidos, 1 sussurro detectado.'
+      ]
+    },
+    'echo silence': {
+      lines: [
+        '[EGG-13] silence',
+        'silence',
+        'silence',
+        'A quarta repeticao nunca volta.'
+      ]
+    },
+    'where am i': {
+      lines: [
+        '[EGG-14] Coordenadas resolvidas: setor EX-0, orbitando ausencia.',
+        'Descricao local: "longe demais para mapas humanos".'
+      ]
+    },
+    'status red': {
+      lines: [
+        '[EGG-15] Alerta vermelho acionado em todos os conveses.',
+        'Tripulacao confirmada: 1 presente, 118 lembrancas.'
+      ]
+    },
+    'run away': {
+      lines: [
+        '[EGG-16] Rota de fuga calculada.',
+        'Rota de fuga removida pela administracao ha 12 anos.'
+      ]
+    },
+    sleep: {
+      lines: [
+        '[EGG-17] Modo repouso solicitado.',
+        'Negado. O sistema teme o que sonha quando desliga.'
+      ]
+    },
+    dream: {
+      lines: [
+        '[EGG-18] Sonho sintetico carregado: praia, sol, vento.',
+        'Erro de renderizacao: mar substituido por areia preta.'
+      ]
+    },
+    singularity: {
+      lines: [
+        '[EGG-19] Gravidade local subiu 300%.',
+        'Todos os arquivos deslizam para o centro da tela e somem.'
+      ]
+    },
+    blackbox: {
+      lines: [
+        '[EGG-20] Caixa-preta aberta sob protocolo de perda total.',
+        'Ultima frase gravada: "nao era para acordar voce".'
+      ]
+    },
+    'decrypt soul': {
+      lines: [
+        '[EGG-21] Chave de decodificacao encontrada: arrependimento.',
+        'Arquivo resultante corrompido por memoria afetiva.'
+      ]
+    },
+    'trace ghost': {
+      lines: [
+        '[EGG-22] Rastro termico detectado no corredor 03.',
+        'Assinatura coincide com usuario removido do sistema.'
+      ]
+    },
+    listen: {
+      lines: [
+        '[EGG-23] Microfones externos abertos.',
+        'Entre os estalos, alguem respira no ritmo do seu teclado.'
+      ]
+    },
+    observer: {
+      lines: [
+        '[EGG-24] Modulo observador acoplado.',
+        'Conclusao: enquanto voce olha para a tela, a tela olha de volta.'
+      ]
+    },
+    null: {
+      lines: [
+        '[EGG-25] null',
+        'null',
+        'null',
+        'Valor vazio demais para ser seguro.'
+      ]
+    },
+    '404': {
+      lines: [
+        '[EGG-26] Memoria nao encontrada.',
+        'Pista: tente lembrar do que voce nunca viveu.'
+      ]
+    },
+    'one more turn': {
+      lines: [
+        '[EGG-27] "So mais um turno" aceito.',
+        'Relogio interno avanca 6 horas sem pedir permissao.'
+      ]
+    },
+    'trust no one': {
+      lines: [
+        '[EGG-28] Regra de sobrevivencia atualizada.',
+        'Excecao adicionada automaticamente: "incluindo esta mensagem".'
+      ]
+    },
+    'red pill': {
+      lines: [
+        '[EGG-29] Realidade estendida carregada.',
+        'As paredes ficam nitidas demais para serem reais.'
+      ]
+    },
+    'blue pill': {
+      lines: [
+        '[EGG-30] Simulacao reconfortante restaurada.',
+        'Voce volta a acreditar que esta tudo sob controle.'
+      ]
+    }
+  };
+
+  const CONTACT_NARRATIVES = [
+    {
+      title: 'Contato de Rádio',
+      message: 'Chiado detectado no canal de rádio. Possível tentativa de contato.',
+      terminal: [
+        'Pacote recebido no canal secundário com origem não catalogada.',
+        'A voz parece pedir ajuda, mas o buffer só mantém fragmentos.'
+      ]
+    },
+    {
+      title: 'Transmissão Fantasma',
+      message: 'Uma portadora antiga retornou e trouxe uma mensagem parcialmente legível.',
+      terminal: [
+        'Sinal ecoa no casco externo com padrão de chamada repetido.',
+        'Trecho isolado: "...nao deixem... setor... frio..."'
+      ]
+    },
+    {
+      title: 'Canal de Emergência',
+      message: 'Um emissor de emergência abriu conexão por 3 segundos e caiu.',
+      terminal: [
+        'Handshake incompleto detectado no nó B-14.',
+        'O identificador remoto coincide com registro arquivado como inativo.'
+      ]
+    },
+    {
+      title: 'Sinal de Longo Alcance',
+      message: 'Pulso de baixa frequência interceptado além da zona segura.',
+      terminal: [
+        'A telemetria acusa distância impossível para um transmissor humano.',
+        'Mesmo assim, o padrão responde quando você escuta em silêncio.'
+      ]
+    }
+  ];
 
   function isValidDownloadPassword(value) {
     try {
@@ -288,6 +615,99 @@
     pendingTab: null,
     authenticated: false
   };
+
+  function wait(ms) {
+    return new Promise((resolve) => {
+      window.setTimeout(resolve, ms);
+    });
+  }
+
+  function pickRandomItem(items) {
+    if (!Array.isArray(items) || !items.length) return null;
+    return items[Math.floor(Math.random() * items.length)];
+  }
+
+  function corruptText(input, intensity = 0.14) {
+    const source = String(input || '');
+    if (!source) return source;
+
+    const glyphs = ['#', '%', '@', '!', '?', '*', '~'];
+    const chars = source.split('');
+
+    for (let index = 0; index < chars.length; index += 1) {
+      const char = chars[index];
+      if (char === ' ') continue;
+
+      if (Math.random() < intensity) {
+        const roll = Math.random();
+
+        if (roll < 0.34) {
+          chars[index] = glyphs[Math.floor(Math.random() * glyphs.length)];
+        } else if (roll < 0.67) {
+          chars[index] = char.toUpperCase() === char ? char.toLowerCase() : char.toUpperCase();
+        } else {
+          chars[index] = '';
+        }
+      }
+    }
+
+    const corrupted = chars.join('');
+    return corrupted || source;
+  }
+
+  function maybeCorruptText(text, chance = 0.55, intensity = 0.14) {
+    if (Math.random() >= chance) {
+      return text;
+    }
+
+    return corruptText(text, intensity);
+  }
+
+  function formatAsciiTable(headers, rows) {
+    const widths = headers.map((header, index) => {
+      const cellWidths = rows.map((row) => String(row[index] || '').length);
+      return Math.max(header.length, ...cellWidths);
+    });
+
+    const border = `+-${widths.map((size) => '-'.repeat(size)).join('-+-')}-+`;
+    const formatRow = (cells) => `| ${cells.map((cell, index) => String(cell || '').padEnd(widths[index], ' ')).join(' | ')} |`;
+
+    return [
+      border,
+      formatRow(headers),
+      border,
+      ...rows.map(formatRow),
+      border
+    ];
+  }
+
+  function getCommandTableLines() {
+    const rows = COMMAND_PALETTE.map((command) => [command, COMMAND_DESCRIPTIONS[command] || 'Comando disponível']);
+    return formatAsciiTable(['comando', 'descrição'], rows).map((line) => ({
+      text: line,
+      className: 'console-line ascii-table-line',
+      instant: true
+    }));
+  }
+
+  function getHistoryLines() {
+    const history = window.ExilioApp && typeof window.ExilioApp.getCommandHistory === 'function'
+      ? window.ExilioApp.getCommandHistory()
+      : [];
+
+    if (!history.length) {
+      return [
+        { text: 'Histórico vazio nesta sessão.', className: 'console-line status-line' }
+      ];
+    }
+
+    const rows = history.slice(-12).map((item, index) => [String(index + 1).padStart(2, '0'), item]);
+    return formatAsciiTable(['#', 'comando'], rows).map((line) => ({
+      text: line,
+      className: 'console-line ascii-table-line',
+      instant: true
+    }));
+  }
 
   function setActiveNavItem(label) {
     document.querySelectorAll('.main-nav li').forEach((item) => {
@@ -389,6 +809,11 @@
     document.querySelectorAll('.quick-commands button').forEach((button) => {
       button.addEventListener('click', () => {
         const command = button.textContent.trim().toLowerCase();
+        if (window.ExilioApp && typeof window.ExilioApp.submitTerminalCommand === 'function') {
+          window.ExilioApp.submitTerminalCommand(command);
+          return;
+        }
+
         if (window.ExilioApp && typeof window.ExilioApp.executeCommand === 'function') {
           window.ExilioApp.executeCommand(command);
         }
@@ -415,6 +840,8 @@
     const view = document.getElementById('page-view');
     if (!view) return;
 
+    view.classList.remove('timeline-view');
+
     const page = terminalPages[command] || terminalPages.help;
     const itemsMarkup = (page.items || []).map((item) => `<li>${escapeHtml(item)}</li>`).join('');
     const linksMarkup = (page.links || []).map((link) => `
@@ -432,100 +859,243 @@
     `;
   }
 
-  function executeCommand(rawCommand) {
-    const command = rawCommand.trim().toLowerCase();
+  async function executeCommand(rawCommand) {
+    const normalizedCommand = rawCommand.replace(/\s+/g, ' ').trim();
+    const command = normalizedCommand.toLowerCase();
     if (!command) return;
 
     const output = document.getElementById('terminal-output');
     if (!output) return;
 
-    const lines = [rawCommand];
+    const lines = [];
 
     if (command === 'clear') {
-      output.innerHTML = '';
+      if (window.ExilioApp && typeof window.ExilioApp.clearTerminalOutput === 'function') {
+        window.ExilioApp.clearTerminalOutput();
+      } else {
+        output.innerHTML = '';
+      }
       renderTerminalPage('help');
-      lines.push('Terminal limpo. Digite help para ver os comandos.');
+      lines.push({ text: 'Terminal limpo. Digite help para ver os comandos.', className: 'console-line status-line' });
       if (window.ExilioApp && typeof window.ExilioApp.playSound === 'function') {
         window.ExilioApp.playSound('confirmation');
       }
-      window.ExilioApp.typeTerminalLines(lines);
+      return window.ExilioApp.typeTerminalLines(lines);
+    }
+
+    if (command === 'help') {
+      renderTerminalPage(command);
+      lines.push({ text: 'Comandos disponíveis no console:', className: 'console-line status-line' });
+      lines.push(...getCommandTableLines());
+      return window.ExilioApp.typeTerminalLines(lines);
+    }
+
+    if (command === 'history') {
+      renderTerminalPage(command);
+      lines.push({ text: 'Histórico da sessão atual:', className: 'console-line status-line' });
+      lines.push(...getHistoryLines());
+      return window.ExilioApp.typeTerminalLines(lines);
+    }
+
+    if (command === 'database') {
+      if (window.ExilioApp && window.ExilioApp.database && typeof window.ExilioApp.database.openDatabaseView === 'function') {
+        const dbLines = await window.ExilioApp.database.openDatabaseView();
+        if (window.ExilioApp && typeof window.ExilioApp.playSound === 'function') {
+          window.ExilioApp.playSound('alert');
+        }
+        return window.ExilioApp.typeTerminalLines(dbLines);
+      }
+
+      lines.push({ text: 'Base de dados indisponível no momento.', className: 'console-line alert-message' });
+      return window.ExilioApp.typeTerminalLines(lines);
+    }
+
+    if (command === 'notifications') {
+      if (window.ExilioApp && window.ExilioApp.notifications && typeof window.ExilioApp.notifications.openHistoryView === 'function') {
+        if (window.ExilioApp && typeof window.ExilioApp.playSound === 'function') {
+          window.ExilioApp.playSound('system-started');
+        }
+        return window.ExilioApp.notifications.openHistoryView();
+      }
+
+      lines.push({ text: 'Histórico de notificações indisponível no momento.', className: 'console-line alert-message' });
+      return window.ExilioApp.typeTerminalLines(lines);
+    }
+
+    if (command === 'contato') {
+      renderTerminalPage(command);
+
+      const selectedNarrative = pickRandomItem(CONTACT_NARRATIVES) || CONTACT_NARRATIVES[0];
+      const useNarrativeMode = Math.random() < 0.72;
+
+      const notificationTitle = useNarrativeMode
+        ? maybeCorruptText(selectedNarrative.title, 0.46, 0.12)
+        : 'Contato de Rádio';
+      const notificationMessage = useNarrativeMode
+        ? maybeCorruptText(selectedNarrative.message, 0.62, 0.18)
+        : 'Chiado detectado no canal de rádio. Possível tentativa de contato.';
+
+      if (window.ExilioApp && window.ExilioApp.notifications && typeof window.ExilioApp.notifications.alert === 'function') {
+        window.ExilioApp.notifications.alert(notificationMessage, {
+          title: notificationTitle,
+          duration: 4200
+        });
+      }
+
+      if (window.ExilioApp && typeof window.ExilioApp.playSound === 'function') {
+        window.ExilioApp.playSound('alert');
+      }
+
+      lines.push({
+        text: maybeCorruptText('Alerta emitido: tentativa de contato registrada no canal secundário.', 0.38, 0.11),
+        className: 'console-line alert'
+      });
+
+      if (useNarrativeMode) {
+        const narrativeLines = (selectedNarrative.terminal || []).map((text) => ({
+          text: maybeCorruptText(text, 0.68, 0.2),
+          className: 'console-line status-line'
+        }));
+        lines.push(...narrativeLines);
+      }
+
+      lines.push({
+        text: maybeCorruptText('Use notifications para revisar o histórico de sinais.', 0.32, 0.1),
+        className: 'console-line status-line'
+      });
+      return window.ExilioApp.typeTerminalLines(lines);
+    }
+
+    if (command === 'scan') {
+      renderTerminalPage(command);
+      if (window.ExilioApp && typeof window.ExilioApp.playSound === 'function') {
+        window.ExilioApp.playSound('alert');
+      }
+
+      await window.ExilioApp.typeTerminalLines([
+        { text: 'Iniciando varredura de integridade...', className: 'console-line status-line' },
+        { text: 'Canal de telemetria sincronizado.', className: 'console-line status-line' }
+      ]);
+      await wait(380);
+      await window.ExilioApp.typeTerminalLines([
+        { text: 'Nó A-01: online', className: 'console-line status-line' },
+        { text: 'Nó B-14: latência dentro do esperado', className: 'console-line status-line' }
+      ]);
+      await wait(380);
+      return window.ExilioApp.typeTerminalLines([
+        { text: 'Varredura concluída. Nenhuma anomalia crítica encontrada.', className: 'console-line alert' }
+      ]);
       return;
+    }
+
+    if (SECRET_COMMANDS[command]) {
+      const secret = SECRET_COMMANDS[command];
+      const secretLines = (secret.lines || []).map((text, index) => ({
+        text,
+        className: index === 0 ? 'console-line alert' : 'console-line status-line'
+      }));
+
+      renderTerminalPage(secret.page && terminalPages[secret.page] ? secret.page : 'help');
+
+      if (window.ExilioApp && typeof window.ExilioApp.playSound === 'function') {
+        window.ExilioApp.playSound('alert');
+      }
+
+      return window.ExilioApp.typeTerminalLines(secretLines);
     }
 
     if (command === 'reboot') {
       window.dispatchEvent(new Event('boot:restart'));
       renderTerminalPage(command);
-      lines.push(`Página carregada: ${terminalPages[command].title}`);
-      window.ExilioApp.typeTerminalLines(lines);
+      lines.push({ text: `Página carregada: ${terminalPages[command].title}`, className: 'console-line status-line' });
+      return window.ExilioApp.typeTerminalLines(lines);
       return;
     }
 
     if (command === 'exit') {
       renderTerminalPage(command);
-      lines.push('Sessão encerrada. O terminal pode ser reaberto quando necessário.');
-      window.ExilioApp.typeTerminalLines(lines);
+      lines.push({ text: 'Sessão encerrada. O terminal pode ser reaberto quando necessário.', className: 'console-line status-line' });
+      return window.ExilioApp.typeTerminalLines(lines);
       return;
     }
 
     if (command === 'start') {
       window.dispatchEvent(new Event('boot:restart'));
       renderTerminalPage(command);
-      lines.push(`Página carregada: ${terminalPages[command].title}`);
-      window.ExilioApp.typeTerminalLines(lines);
+      lines.push({ text: `Página carregada: ${terminalPages[command].title}`, className: 'console-line status-line' });
+      return window.ExilioApp.typeTerminalLines(lines);
       return;
     }
 
     if (command === 'download') {
-      lines.push('Senha necessária. Use download <senha> para continuar.');
-      lines.push('Acesso negado até que a senha correta seja informada.');
+      lines.push({ text: 'Senha necessária. Use download <senha> para continuar.', className: 'console-line alert-message' });
+      lines.push({ text: 'Acesso negado até que a senha correta seja informada.', className: 'console-line alert-message' });
       renderTerminalPage('help');
       if (window.ExilioApp && typeof window.ExilioApp.playSound === 'function') {
         window.ExilioApp.playSound('error');
       }
-      window.ExilioApp.typeTerminalLines(lines);
+      return window.ExilioApp.typeTerminalLines(lines);
       return;
     }
 
     if (command.startsWith('download ')) {
       const [_, providedPassword] = command.split(/\s+/);
       if (!isValidDownloadPassword(providedPassword)) {
-        lines.push('Senha incorreta. Acesso ao download bloqueado.');
+        lines.push({ text: 'Senha incorreta. Acesso ao download bloqueado.', className: 'console-line alert-message' });
         renderTerminalPage('help');
         if (window.ExilioApp && typeof window.ExilioApp.playSound === 'function') {
           window.ExilioApp.playSound('error');
         }
-        window.ExilioApp.typeTerminalLines(lines);
+        return window.ExilioApp.typeTerminalLines(lines);
         return;
       }
 
       renderTerminalPage('download');
-      lines.push('Senha validada. Acesso ao download autorizado.');
+      lines.push({ text: 'Senha validada. Acesso ao download autorizado.', className: 'console-line alert' });
       if (window.ExilioApp && typeof window.ExilioApp.playSound === 'function') {
         window.ExilioApp.playSound('alert');
       }
-      window.ExilioApp.typeTerminalLines(lines);
+      return window.ExilioApp.typeTerminalLines(lines);
       return;
     }
 
+    if (window.ExilioApp && window.ExilioApp.filesystem && typeof window.ExilioApp.filesystem.executeCommand === 'function') {
+      const fsResult = await window.ExilioApp.filesystem.executeCommand(normalizedCommand);
+      if (fsResult && fsResult.handled) {
+        if (window.ExilioApp && typeof window.ExilioApp.playSound === 'function') {
+          window.ExilioApp.playSound('alert');
+        }
+        return window.ExilioApp.typeTerminalLines(fsResult.lines || []);
+      }
+    }
+
     if (!terminalPages[command]) {
-      lines.push(`Comando não reconhecido: ${rawCommand}`);
-      lines.push('Digite help para ver os comandos disponíveis.');
+      lines.push({ text: `Comando não reconhecido: ${normalizedCommand}`, className: 'console-line alert-message' });
+      lines.push({ text: 'Digite help para ver os comandos disponíveis.', className: 'console-line status-line' });
       renderTerminalPage('help');
       if (window.ExilioApp && typeof window.ExilioApp.playSound === 'function') {
         window.ExilioApp.playSound('error');
       }
-      window.ExilioApp.typeTerminalLines(lines);
+      return window.ExilioApp.typeTerminalLines(lines);
       return;
     }
 
     renderTerminalPage(command);
-    lines.push(`Página carregada: ${terminalPages[command].title}`);
+    lines.push({ text: `Página carregada: ${terminalPages[command].title}`, className: 'console-line status-line' });
     if (window.ExilioApp && typeof window.ExilioApp.playSound === 'function') {
       window.ExilioApp.playSound('alert');
     }
-    window.ExilioApp.typeTerminalLines(lines);
+    return window.ExilioApp.typeTerminalLines(lines);
   }
 
   window.ExilioApp = window.ExilioApp || {};
   window.ExilioApp.executeCommand = executeCommand;
+  window.ExilioApp.getPromptLabel = () => {
+    if (window.ExilioApp && window.ExilioApp.filesystem && typeof window.ExilioApp.filesystem.getPromptLabel === 'function') {
+      return window.ExilioApp.filesystem.getPromptLabel() || TERMINAL_PROMPT;
+    }
+
+    return TERMINAL_PROMPT;
+  };
+  window.ExilioApp.getCommandPalette = () => COMMAND_PALETTE.slice();
 })();

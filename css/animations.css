@@ -1,4 +1,4 @@
-/* UI animations and transitions */
+/* UI animations, transitions, and motion effects */
 .hidden-text {
   opacity: 0;
   transform: translateY(6px);
@@ -71,6 +71,21 @@
   to {
     width: var(--fill);
     opacity: 1;
+  }
+}
+
+@keyframes hud-bar-shift {
+  0% {
+    background-position: 0% 50%;
+    filter: hue-rotate(var(--bar-hue, 0deg)) brightness(0.95);
+  }
+  50% {
+    background-position: 100% 50%;
+    filter: hue-rotate(var(--bar-hue, 0deg)) brightness(1.08);
+  }
+  100% {
+    background-position: 0% 50%;
+    filter: hue-rotate(var(--bar-hue, 0deg)) brightness(0.95);
   }
 }
 
@@ -179,5 +194,16 @@
   }
   50% {
     opacity: 0.3;
+  }
+}
+
+@keyframes timeline-connector-drop {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

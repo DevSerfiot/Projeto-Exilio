@@ -1,0 +1,153 @@
+{
+  "version": 2,
+  "root": {
+    "name": "/",
+    "type": "dir",
+    "children": [
+      {
+        "name": "logs",
+        "type": "dir",
+        "children": [
+          {
+            "name": "incident-076.log",
+            "type": "file",
+            "content": "03:14:19 - Queda abrupta de energia no anel externo.\n03:15:02 - Gerador auxiliar iniciou com atraso de 11 segundos.\n03:19:40 - Voz desconhecida registrada no canal de manutencao: 'nao estamos sozinhos'."
+          },
+          {
+            "name": "patrol-night.log",
+            "type": "file",
+            "content": "Ronda noturna no corredor C concluiu sem contato visual.\nMarcas de arrasto observadas proximo ao compartimento de cargas.\nA equipe recusou retornar sem escolta armada."
+          }
+        ]
+      },
+      {
+        "name": "archive",
+        "type": "dir",
+        "children": [
+          {
+            "name": "manifest-shipyard.txt",
+            "type": "file",
+            "content": "Manifesto do estaleiro 12-B.\nCarga prevista: componentes de blindagem, filtros de ar e 42 caixas lacradas sem identificacao.\nObservacao: tres lacres violados antes da partida."
+          },
+          {
+            "name": "letter-home.txt",
+            "type": "file",
+            "content": "Mae, se esta mensagem chegar, significa que a estacao ainda transmite.\nDisseram que voltariamos em duas semanas, mas os dias perderam forma por aqui.\nGuarde meu quarto como esta."
+          }
+        ]
+      },
+      {
+        "name": "database",
+        "type": "dir",
+        "children": [
+          {
+            "name": "specimens.dbnote",
+            "type": "file",
+            "content": "Amostra 09: resposta agressiva a luz branca.\nAmostra 11: tecido se recompone em ate 4 minutos apos corte superficial.\nAmostra 13: permanece em silencio absoluto durante observacao humana."
+          },
+          {
+            "name": "staff-index.csv",
+            "type": "file",
+            "content": "id,nome,setor,status\n001,Helena Moraes,Seguranca,Ativo\n014,Ravi Nunes,Reator,Desaparecido\n032,Ines Duarte,Laboratorio,Ativo\n089,Tomas G.,Transmissoes,Afastado"
+          }
+        ]
+      },
+      {
+        "name": "system",
+        "type": "dir",
+        "children": [
+          {
+            "name": "kernel-report.sys",
+            "type": "file",
+            "content": "Kernel EXODUS v4.7 iniciado em modo de contingencia.\nModulo de isolamento: habilitado.\nSubsistema de travas magenticas: 2 falhas persistentes no setor norte."
+          },
+          {
+            "name": "tasks.queue",
+            "type": "file",
+            "content": "[P0] Restaurar monitoramento da ponte de comando.\n[P1] Realocar equipe medica para ala segura.\n[P2] Inventariar suprimentos de oxigenio para 72 horas."
+          }
+        ]
+      },
+      {
+        "name": "reactor",
+        "type": "dir",
+        "children": [
+          {
+            "name": "core-temperature.log",
+            "type": "file",
+            "content": "06:00 - 611 C\n06:30 - 642 C\n07:00 - 699 C\n07:13 - ALERTA: taxa de subida acima do limite seguro."
+          },
+          {
+            "name": "coolant-plan.md",
+            "type": "file",
+            "content": "Plano de resfriamento emergencial:\n1. Injetar mistura B no duto primario.\n2. Isolar valvulas 3 e 4 por 90 segundos.\n3. Confirmar reducao de pelo menos 25 C antes de reabrir o fluxo."
+          }
+        ]
+      },
+      {
+        "name": "security",
+        "type": "dir",
+        "children": [
+          {
+            "name": "breach-report.txt",
+            "type": "file",
+            "content": "Porta S-19 encontrada aberta sem registro de credencial.\nCamera 4 exibiu interferencia por 37 segundos.\nDois agentes relataram ouvir passos no conduto superior."
+          },
+          {
+            "name": "clearance-levels.txt",
+            "type": "file",
+            "content": "Nivel 1: acesso civil e manutencao.\nNivel 2: acesso tecnico e reator.\nNivel 3: laboratorios sensiveis e arquivos sigilosos.\nNivel 4: comando e protocolo eclipse."
+          }
+        ]
+      },
+      {
+        "name": "personnel",
+        "type": "dir",
+        "children": [
+          {
+            "name": "medical-observations.txt",
+            "type": "file",
+            "content": "Paciente 014 apresenta insonia severa e resposta hostil a ruidos metalicos.\nPaciente 028 relata sonhos recorrentes com corredores alagados.\nEquipe recomenda vigilancia continua por 48 horas."
+          },
+          {
+            "name": "last-rollcall.txt",
+            "type": "file",
+            "content": "Ultima chamada geral:\nPresentes: 27\nAusentes: 5\nNao localizados: 3\nObservacao: ausencias concentradas no turno da madrugada."
+          }
+        ]
+      },
+      {
+        "name": "laboratory",
+        "type": "dir",
+        "children": [
+          {
+            "name": "experiment-lambda.txt",
+            "type": "file",
+            "content": "Experimento Lambda reiniciado apos falha no sensor de pressao.\nMaterial organico reagiu ao campo magnetico com pulsacao ritmica.\nA equipe suspendeu a terceira fase por risco biologico desconhecido."
+          },
+          {
+            "name": "ethics-memo.txt",
+            "type": "file",
+            "content": "Memorando interno: o comite de etica nao aprovou testes em estado de alerta maximo.\nA direcao executiva autorizou continuidade sob justificativa de sobrevivencia operacional."
+          }
+        ]
+      },
+      {
+        "name": "transmissions",
+        "type": "dir",
+        "children": [
+          {
+            "name": "distress-signal.txt",
+            "type": "file",
+            "content": "...aqui estacao Argos... repetindo... sem rota segura...\nse alguem estiver ouvindo, nao acople na doca principal...\neles aprenderam a imitar vozes humanas..."
+          },
+          {
+            "name": "uplink-window.txt",
+            "type": "file",
+            "content": "Janela de uplink orbital abre em 18 minutos.\nTempo util de transmissao: 43 segundos.\nPrioridade recomendada: coordenadas, estado do reator e numero de sobreviventes."
+          }
+        ]
+      }
+    ]
+  }
+}

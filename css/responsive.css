@@ -1,4 +1,4 @@
-/* Responsive layout */
+/* Responsive layout rules for desktop, tablet, and mobile */
 
 /* Large screens / desktop */
 @media (min-width: 1200px) {
@@ -82,6 +82,11 @@
   .terminal-input-row {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .terminal-input-shell {
+    flex-direction: column;
+    gap: 8px;
   }
 
   .prompt {
@@ -168,6 +173,10 @@
 
   .terminal-output {
     min-height: 220px;
+  }
+
+  .terminal-toolbar {
+    flex-direction: column;
   }
 
   .terminal-action,

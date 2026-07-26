@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "records": [
+    {
+      "registro": "REG-001",
+      "autor": "Núcleo Exílio",
+      "data": "2026-07-14",
+      "nivelAcesso": "1",
+      "status": "Ativo",
+      "conteudo": "Inicialização do núcleo concluída com resposta positiva do sistema."
+    },
+    {
+      "registro": "REG-014",
+      "autor": "Canal Sigma",
+      "data": "2026-07-15",
+      "nivelAcesso": "2",
+      "status": "Criptografado",
+      "conteudo": "Pacote com coordenadas do setor leste e rota de fuga alternativa."
+    },
+    {
+      "registro": "REG-032",
+      "autor": "Setor de Vigilância",
+      "data": "2026-07-16",
+      "nivelAcesso": "3",
+      "status": "Oculto",
+      "conteudo": "Entrada ocultada por protocolo de contenção e apagamento parcial."
+    },
+    {
+      "registro": "REG-089",
+      "autor": "Comando Local",
+      "data": "2026-07-17",
+      "nivelAcesso": "4",
+      "status": "Bloqueado",
+      "conteudo": "Solicitação de acesso negada pelo núcleo principal."
+    },
+    {
+      "registro": "REG-114",
+      "autor": "Arquivo Morto",
+      "data": "2026-07-18",
+      "nivelAcesso": "5",
+      "status": "Corrompido",
+      "conteudo": "Dados fragmentados, checksum inválido e blocos de memória perdidos."
+    },
+    {
+      "registro": "REG-198",
+      "autor": "Transmissão Delta",
+      "data": "2026-07-19",
+      "nivelAcesso": "2",
+      "status": "Ativo",
+      "conteudo": "Registro de transmissão preservado e confirmado no arquivo principal."
+    }
+  ]
+}

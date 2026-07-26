@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "events": [
+    {
+      "year": "2051",
+      "title": "Projeto iniciado"
+    },
+    {
+      "year": "2054",
+      "title": "Primeira missão"
+    },
+    {
+      "year": "2057",
+      "title": "Falha do reator"
+    },
+    {
+      "year": "2061",
+      "title": "Evacuação"
+    },
+    {
+      "year": "2064",
+      "title": "Silêncio"
+    },
+    {
+      "year": "2070",
+      "title": "Reconexão"
+    }
+  ]
+}

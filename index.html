@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
   <head>
+    <!-- Metadados e carregamento de recursos base -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Projeto Exílio</title>
@@ -21,6 +22,7 @@
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
   </head>
   <body>
+    <!-- Camadas visuais e notificações do sistema -->
     <div id="particle-layer" class="particle-layer" aria-hidden="true"></div>
     <div id="notification-shell" class="notification-shell" aria-live="polite"></div>
 
@@ -120,8 +122,8 @@
               </ul>
             </nav>
             <div class="status-global">
-              <h3>ESTÁVEL</h3>
-              <p>OPERAÇÃO SEGURA</p>
+              <h3>INSTAVEL</h3>
+              <p>OPERAÇÃO EM ALERTA </p>
             </div>
           </aside>
 
@@ -133,7 +135,6 @@
               <h1 class="glitch-text">Terminal de Emergência</h1>
               <span>Sistema de controle de crise</span>
             </div>
-            <button id="copy-terminal-button" class="terminal-action" type="button">Copiar saída</button>
           </div>
 
           
@@ -158,8 +159,15 @@
           </div>
 
           <div class="terminal-input-row">
-            <span class="prompt">root@exilio:~$</span>
-            <input id="terminal-input" type="text" autocomplete="off" spellcheck="false" placeholder="Digite um comando" />
+            <div class="terminal-toolbar">
+              <button id="copy-terminal-button" class="terminal-action" type="button">Copiar saída</button>
+              <button id="clear-terminal-button" class="terminal-action" type="button">Limpar terminal</button>
+              <button id="notifications-button" class="terminal-action" type="button">Ver notificações</button>
+            </div>
+            <div class="terminal-input-shell">
+              <span class="prompt">root@exilio:~$ </span>
+              <textarea id="terminal-input" rows="1" autocomplete="off" spellcheck="false" placeholder="Digite um comando. Enter envia, Shift+Enter cria nova linha, Tab completa."></textarea>
+            </div>
           </div>
             </section>
 
@@ -189,7 +197,7 @@
                   </div>
                   <div class="hud-panel__state">
                     <span class="status-dot"></span>
-                    <span>Conexão estável</span>
+                    <span>Conexão instavel</span>
                   </div>
                 </div>
                 <div class="hud-grid">
@@ -217,31 +225,31 @@
                     <div class="hud-bar"><span></span></div>
                   </article>
 
-                  <article class="hud-card" style="--delay: 0.25s; --fill: 35%; --accent-color: #5ee7df;">
+                  <article class="hud-card" style="--delay: 0.25s; --fill: 35%; --accent-color: #a3d454;">
                     <span class="hud-card__label">Latência</span>
                     <strong class="hud-card__value">12 ms</strong>
                     <div class="hud-bar"><span></span></div>
                   </article>
 
-                  <article class="hud-card" style="--delay: 0.3s; --fill: 50%; --accent-color: #7dd3fc;">
+                  <article class="hud-card" style="--delay: 0.3s; --fill: 50%; --accent-color: #f3e855;">
                     <span class="hud-card__label">Ping</span>
                     <strong class="hud-card__value">42 ms</strong>
                     <div class="hud-bar"><span></span></div>
                   </article>
 
-                  <article class="hud-card" style="--delay: 0.35s; --fill: 92%; --accent-color: #86f5a4;">
+                  <article class="hud-card" style="--delay: 0.35s; --fill: 92%; --accent-color: #f1d846;">
                     <span class="hud-card__label">Integridade</span>
-                    <strong class="hud-card__value">92%</strong>
+                    <strong class="hud-card__value">52%</strong>
                     <div class="hud-bar"><span></span></div>
                   </article>
 
-                  <article class="hud-card" style="--delay: 0.4s; --fill: 7%; --accent-color: #b388ff;">
+                  <article class="hud-card" style="--delay: 0.4s; --fill: 7%; --accent-color: #ff0000;">
                     <span class="hud-card__label">Contaminação</span>
-                    <strong class="hud-card__value">7%</strong>
+                    <strong class="hud-card__value">95%</strong>
                     <div class="hud-bar"><span></span></div>
                   </article>
 
-                  <article class="hud-card" style="--delay: 0.45s; --fill: 94%; --accent-color: #5ee7df;">
+                  <article class="hud-card" style="--delay: 0.45s; --fill: 94%; --accent-color: #45ff45;">
                     <span class="hud-card__label">Oxigênio</span>
                     <strong class="hud-card__value">94%</strong>
                     <div class="hud-bar"><span></span></div>
@@ -255,15 +263,15 @@
 
                   <article class="hud-card hud-card--status" style="--delay: 0.55s; --accent-color: #86f5a4;">
                     <span class="hud-card__label">Status Global</span>
-                    <strong class="hud-card__value">ESTÁVEL</strong>
-                    <div class="hud-card__status"><span class="status-dot"></span>Operação segura</div>
+                    <strong class="hud-card__value">INSTAVEL</strong>
+                    <div class="hud-card__status"><span class="status-dot"></span>Operação Instável</div>
                   </article>
                 </div>
               </div>
             </section>
             <section class="threat-gauge">
               <h4>Nível de Ameaça</h4>
-              <div class="gauge">7%</div>
+              <div class="gauge">90%</div>
             </section>
           </aside>
 
@@ -276,11 +284,20 @@
       </footer>
     </div>
 
+    <!-- Scripts principais organizados por responsabilidade -->
     <script src="js/boot.js"></script>
     <script src="js/clock.js"></script>
     <script src="js/terminal.js"></script>
     <script src="js/commands.js"></script>
     <script src="js/effects.js"></script>
     <script src="js/sounds.js"></script>
+    <script src="js/hud.js"></script>
+    <script src="js/filesystem.js"></script>
+    <script src="js/notifications.js"></script>
+    <script src="js/events.js"></script>
+    <script src="js/particles.js"></script>
+    <script src="js/timeline.js"></script>
+    <script src="js/database.js"></script>
+    <script src="js/alert.js"></script>
   </body>
 </html>

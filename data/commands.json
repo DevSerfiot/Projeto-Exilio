@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "commands": [
+    "help",
+    "about",
+    "logs",
+    "team",
+    "download",
+    "discord",
+    "status",
+    "online",
+    "archive",
+    "timeline",
+    "protocol",
+    "credits",
+    "clear",
+    "reboot",
+    "exit",
+    "start"
+  ]
+}

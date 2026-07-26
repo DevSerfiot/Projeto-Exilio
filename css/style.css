@@ -1,3 +1,4 @@
+/* Core styling for the terminal interface and layout */
 * {
   box-sizing: border-box;
 }
@@ -360,6 +361,7 @@ main {
   font-size: 0.98rem;
   position: relative;
   color: var(--text-primary);
+  white-space: pre-wrap;
 }
 
 .console-line::before {
@@ -370,6 +372,26 @@ main {
 
 .console-line:last-child {
   margin-bottom: 0;
+}
+
+.command-entry {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.command-entry::before,
+.ascii-table-line::before {
+  content: none;
+}
+
+.status-line {
+  color: #b7c7b7;
+}
+
+.ascii-table-line {
+  color: #90f090;
+  letter-spacing: 0.02em;
 }
 
 .status {
@@ -504,6 +526,72 @@ main {
   color: var(--accent);
 }
 
+.page-view.timeline-view {
+  background:
+    radial-gradient(circle at 84% 10%, rgba(255, 60, 60, 0.15), transparent 34%),
+    linear-gradient(135deg, rgba(255, 59, 59, 0.09), rgba(10, 10, 10, 0.35));
+}
+
+.timeline-list {
+  list-style: none;
+  margin: 14px 0 0;
+  padding: 4px 0 0;
+  display: grid;
+  gap: 2px;
+}
+
+.timeline-item {
+  position: relative;
+  padding: 6px 0 12px 22px;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 320ms ease, transform 320ms ease;
+}
+
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 14px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #ff9a9a, #ff3b3b 70%);
+  box-shadow: 0 0 0 4px rgba(255, 60, 60, 0.12), 0 0 16px rgba(255, 60, 60, 0.24);
+}
+
+.timeline-item--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.timeline-year {
+  display: block;
+  margin-bottom: 4px;
+  color: #ff9999;
+  font-size: 0.74rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.timeline-title {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 0.97rem;
+}
+
+.timeline-connector {
+  display: inline-block;
+  margin-top: 8px;
+  color: var(--accent);
+  opacity: 0;
+  transform: translateY(-4px);
+}
+
+.timeline-item--visible .timeline-connector {
+  animation: timeline-connector-drop 420ms ease forwards;
+}
+
 .console-header {
   position: relative;
 }
@@ -620,9 +708,14 @@ main {
   height: 100%;
   width: 0;
   border-radius: inherit;
-  background: linear-gradient(90deg, var(--accent-color), rgba(255, 255, 255, 0.9));
-  animation: hud-bar-fill 900ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  background: linear-gradient(90deg, var(--accent-color), rgba(255, 255, 255, 0.85), var(--accent-color));
+  background-size: 200% 100%;
+  transform-origin: left center;
+  transition: width var(--bar-speed, 1500ms) cubic-bezier(0.22, 1, 0.36, 1), filter 220ms ease;
+  animation: hud-bar-shift var(--bar-speed, 1500ms) linear infinite;
   animation-delay: calc(var(--delay, 0s) + 180ms);
+  box-shadow: 0 0 calc(10px * var(--bar-glow, 0.16)) rgba(255, 255, 255, var(--bar-glow, 0.16));
+  filter: saturate(1.08);
 }
 
 .hud-card--status {
@@ -705,16 +798,41 @@ main {
 
 .terminal-input-row {
   display: flex;
-  align-items: center;
-  gap: 12px;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
   padding-top: 14px;
   border-top: 1px solid rgba(255, 60, 60, 0.12);
+}
+
+.terminal-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.terminal-input-shell {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  box-shadow: inset 0 0 0 1px rgba(255, 60, 60, 0.05);
+}
+
+.terminal-input-shell:focus-within {
+  border-color: rgba(255, 60, 60, 0.26);
+  box-shadow: 0 0 0 3px rgba(255, 60, 60, 0.12);
 }
 
 .prompt {
   color: var(--accent);
   font-weight: 700;
   letter-spacing: 0.04em;
+  padding-top: 0.1rem;
 }
 
 .prompt-inline {
@@ -725,6 +843,15 @@ main {
 
 .command-text {
   color: var(--text-primary);
+  white-space: pre-wrap;
+}
+
+.command-token--name {
+  color: #ff7d7d;
+}
+
+.command-token--args {
+  color: #d4d8d4;
 }
 
 .terminal-cursor {
@@ -740,25 +867,66 @@ main {
 #terminal-input {
   flex: 1;
   min-width: 0;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 10px;
+  min-height: 1.4rem;
+  max-height: 148px;
+  background: transparent;
+  border: 0;
   color: var(--text-primary);
   outline: none;
   font: inherit;
-  padding: 14px 16px;
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
-  box-shadow: inset 0 0 0 1px rgba(255, 60, 60, 0.05);
+  padding: 0;
+  resize: none;
+  overflow-y: auto;
+  line-height: 1.6;
+  transition: color var(--transition-fast);
   caret-color: var(--accent);
 }
 
 #terminal-input:focus {
-  border-color: rgba(255, 60, 60, 0.26);
-  box-shadow: 0 0 0 3px rgba(255, 60, 60, 0.12);
+  border: 0;
+  box-shadow: none;
 }
 
 #terminal-input::placeholder {
   color: rgba(245, 245, 245, 0.38);
+}
+
+.terminal-autocomplete {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(100% + 10px);
+  display: grid;
+  gap: 6px;
+  padding: 10px;
+  border: 1px solid rgba(255, 60, 60, 0.18);
+  border-radius: 12px;
+  background: rgba(10, 10, 10, 0.96);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+  z-index: 12;
+}
+
+.terminal-autocomplete__item {
+  width: 100%;
+  text-align: left;
+  border: 0;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font: inherit;
+  color: var(--text-secondary);
+  background: transparent;
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.terminal-autocomplete__item:hover,
+.terminal-autocomplete__item.is-active {
+  background: rgba(255, 60, 60, 0.12);
+  color: var(--text-primary);
+}
+
+.hidden {
+  display: none !important;
 }
 
 footer {
