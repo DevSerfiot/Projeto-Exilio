@@ -1,0 +1,22 @@
+:root {
+  color-scheme: dark;
+  --bg-primary: #090909;
+  --bg-panel: #111111;
+  --bg-panel-soft: rgba(17,17,17,0.96);
+  --text-primary: #F2F2F2;
+  --text-secondary: #9B9B9B;
+  --text-muted: rgba(155,155,155,0.88);
+  --accent: #FF4040;
+  --accent-strong: #FF4040;
+  --accent-soft: rgba(255,60,60,0.15);
+  --border-color: #2A2A2A;
+  --shadow-color: rgba(42,42,42,0.6);
+  --red-glow: rgba(255,60,60,0.15);
+  --font-display: 'Orbitron', sans-serif;
+  --font-ui: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', Arial;
+  --font-mono: 'JetBrains Mono', 'IBM Plex Mono', monospace;
+  --font-family: var(--font-ui);
+  --terminal-height: 340px;
+  --transition-fast: 180ms ease;
+  --transition-smooth: 320ms ease;
+}

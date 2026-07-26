@@ -1,0 +1,250 @@
+/* Responsive layout */
+
+/* Large screens / desktop */
+@media (min-width: 1200px) {
+  .console-screen {
+    max-width: 1120px;
+    padding: 32px;
+  }
+
+  .hud-panel {
+    padding: 22px;
+  }
+
+  .hud-grid {
+    gap: 16px;
+  }
+
+  .terminal-output {
+    min-height: 380px;
+  }
+}
+
+/* Notebook / small desktop */
+@media (max-width: 1199px) {
+  main {
+    padding: 22px;
+  }
+
+  .console-screen {
+    padding: 26px;
+  }
+
+  .hud-panel {
+    padding: 20px;
+  }
+
+  .hud-grid {
+    gap: 14px;
+  }
+}
+
+/* Tablet */
+@media (max-width: 992px) {
+  .system-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+  }
+
+  .brand {
+    width: 100%;
+  }
+
+  .header-status {
+    width: 100%;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+
+  .clock-block {
+    min-width: 0;
+    width: 100%;
+    padding-left: 0;
+    border-left: none;
+    border-top: 1px solid rgba(255, 60, 60, 0.12);
+    margin-top: 10px;
+    padding-top: 10px;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .console-header,
+  .hud-panel__header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .hud-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .terminal-input-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .prompt {
+    margin-bottom: 8px;
+  }
+
+  .terminal-output {
+    min-height: 300px;
+  }
+}
+
+/* Mobile / celular */
+@media (max-width: 768px) {
+  main {
+    padding: 16px;
+  }
+
+  .console-screen {
+    padding: 20px;
+  }
+
+  .system-header {
+    margin: 0 0 12px;
+  }
+
+  .header-status {
+    justify-content: flex-start;
+    gap: 8px;
+  }
+
+  .status-pill {
+    padding: 6px 9px;
+    font-size: 0.7rem;
+  }
+
+  .hud-panel {
+    padding: 16px;
+  }
+
+  .hud-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .terminal-output {
+    min-height: 260px;
+  }
+
+  .page-view {
+    margin: 18px 0 14px;
+    padding: 16px;
+  }
+
+  #terminal-input {
+    padding: 12px 14px;
+  }
+}
+
+/* Extra small phones */
+@media (max-width: 600px) {
+  .console-screen {
+    padding: 18px;
+  }
+
+  .console-header h1 {
+    font-size: 1rem;
+  }
+
+  .console-header span {
+    font-size: 0.82rem;
+  }
+
+  .hud-panel__state {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .hud-card {
+    padding: 12px;
+  }
+
+  .hud-card__value {
+    font-size: 0.95rem;
+  }
+
+  .terminal-output {
+    min-height: 220px;
+  }
+
+  .terminal-action,
+  .audio-toggle {
+    width: 100%;
+  }
+
+  .prompt {
+    font-size: 0.85rem;
+  }
+
+  .startup-terminal {
+    padding: 18px;
+  }
+
+  .startup-output {
+    min-height: 200px;
+  }
+
+  footer {
+    padding: 16px 18px 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  header,
+  main,
+  footer {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .system-header {
+    margin-bottom: 10px;
+  }
+
+  .brand {
+    gap: 10px;
+  }
+
+  .brand-name {
+    font-size: 0.8rem;
+  }
+
+  .brand-system {
+    font-size: 0.72rem;
+  }
+
+  .status-pill {
+    padding: 6px 8px;
+    font-size: 0.67rem;
+  }
+
+  .clock-block {
+    width: 100%;
+    border-top: 1px solid rgba(255, 60, 60, 0.12);
+    margin-top: 10px;
+    padding-top: 10px;
+  }
+
+  .page-view h2 {
+    font-size: 1rem;
+  }
+
+  .page-view {
+    padding: 14px;
+  }
+
+  .hud-card__label {
+    font-size: 0.66rem;
+  }
+
+  .hud-card__value {
+    font-size: 0.95rem;
+  }
+
+  footer p {
+    font-size: 0.82rem;
+  }
+}

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Projeto Exílio</title>
+
+    <link rel="stylesheet" href="css/variables.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/animations.css" />
+    <link rel="stylesheet" href="css/responsive.css" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap"
+      rel="stylesheet"
+    />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div id="particle-layer" class="particle-layer" aria-hidden="true"></div>
+    <div id="notification-shell" class="notification-shell" aria-live="polite"></div>
+
+    <div id="startup-overlay" class="startup-overlay" aria-hidden="false">
+      <div class="startup-terminal">
+        <div class="startup-header">
+          <span class="startup-brand">EXÍLIO / ALERTA VERMELHO</span>
+          <span class="startup-status alert-blink">ALERTA</span>
+        </div>
+        <div id="startup-output" class="startup-output" aria-live="polite"></div>
+        <div class="startup-progress">
+          <div class="progress-bar" aria-hidden="true">
+            <div class="progress-fill" style="width: 0%"></div>
+          </div>
+          <div class="boot-log">Boot sequence: <span id="boot-percent">0%</span></div>
+        </div>
+      </div>
+      <div class="scanlines" aria-hidden="true"></div>
+    </div>
+
+    <div id="login-overlay" class="startup-overlay login-overlay hidden" aria-hidden="true">
+      <div class="startup-terminal login-terminal">
+        <div class="startup-header">
+          <span class="startup-brand">EXÍLIO / LOGIN DE EMERGÊNCIA</span>
+          <span class="startup-status alert-blink">ALERTA</span>
+        </div>
+        <form id="login-form" class="login-form" autocomplete="off">
+          <label>
+            <span>Usuário</span>
+            <input id="login-user" type="text" autocomplete="username" placeholder="Digite seu usuário" />
+          </label>
+          <label>
+            <span>Senha</span>
+            <input id="login-pass" type="password" autocomplete="current-password" placeholder="Digite sua senha" />
+          </label>
+          <div class="login-actions">
+            <button id="login-submit" type="submit" class="terminal-action">Entrar</button>
+            <button id="login-cancel" type="button" class="terminal-action">Cancelar</button>
+          </div>
+          <p class="login-help">Use credenciais de emergência para acessar o painel de controle.</p>
+        </form>
+      </div>
+      <div class="scanlines" aria-hidden="true"></div>
+    </div>
+
+    <div id="app-shell" class="app-shell">
+      <header class="system-header">
+        <div class="window-controls" aria-hidden="true">
+          <span class="control close"></span>
+          <span class="control minimize"></span>
+          <span class="control maximize"></span>
+        </div>
+
+        <div class="brand">
+          <div class="brand-mark">◼</div>
+          <div class="brand-copy glitch-text">
+            <div class="brand-name">Projeto Exílio</div>
+            <div class="brand-system">EXODUS Operating System</div>
+          </div>
+        </div>
+
+        <div class="header-status">
+          <button id="fullscreen-toggle" class="terminal-action" type="button">Tela cheia</button>
+          <button id="theme-toggle" class="terminal-action" type="button">Tema branco/vermelho</button>
+          <button id="audio-toggle" class="audio-toggle" type="button" aria-pressed="false">Sons: OFF</button>
+          <span class="status-pill status-online alert-blink"><span class="status-dot"></span>ONLINE</span>
+          <span class="status-pill"><span class="status-dot"></span>WIFI 6</span>
+          <span class="status-pill"><span class="status-dot"></span>92%</span>
+          <div class="clock-block">
+            <span id="system-date" class="system-date"></span>
+            <span id="system-time" class="system-time"></span>
+          </div>
+        </div>
+      </header>
+      <main>
+        <div class="layout-grid">
+
+          <aside class="left-nav" aria-label="Navegação">
+            <div class="nav-brand">
+              <div class="brand-mark">◼</div>
+              <div>
+                <div class="brand-name">Projeto Exílio</div>
+                <div class="brand-system">EXODUS Operating System</div>
+              </div>
+            </div>
+            <nav class="main-nav">
+              <ul>
+                <li class="active">Terminal</li>
+                <li>Registros</li>
+                <li>Sistema</li>
+                <li>Protocolos</li>
+                <li>Arquivos</li>
+                <li>Mapa</li>
+                <li>Equipe</li>
+                <li>Créditos</li>
+                <li>Status Global</li>
+              </ul>
+            </nav>
+            <div class="status-global">
+              <h3>ESTÁVEL</h3>
+              <p>OPERAÇÃO SEGURA</p>
+            </div>
+          </aside>
+
+          <section class="center-panel">
+            <div class="panel-title">TERMINAL DE EMERGÊNCIA</div>
+            <section class="console-screen">
+          <div class="console-header">
+            <div>
+              <h1 class="glitch-text">Terminal de Emergência</h1>
+              <span>Sistema de controle de crise</span>
+            </div>
+            <button id="copy-terminal-button" class="terminal-action" type="button">Copiar saída</button>
+          </div>
+
+          
+
+          <div id="terminal-output" class="terminal-output" aria-live="polite">
+            <div class="console-line">Inicializando sistema...</div>
+            <div class="console-line">Conectando à instalação...</div>
+            <div class="console-line">Recuperando registros...</div>
+            <div class="console-line terminal-progress-line">
+              <div class="terminal-progress">
+                <div class="terminal-progress__bar"><span></span></div>
+                <span class="terminal-progress__label">100%</span>
+              </div>
+            </div>
+            <div class="console-line">Digite "help"</div>
+            <div class="console-line caret">█</div>
+          </div>
+
+          <div id="page-view" class="page-view" aria-live="polite">
+            <h2>Comandos de emergência disponíveis</h2>
+            <p>Digite um comando para ativar o protocolo de alerta.</p>
+          </div>
+
+          <div class="terminal-input-row">
+            <span class="prompt">root@exilio:~$</span>
+            <input id="terminal-input" type="text" autocomplete="off" spellcheck="false" placeholder="Digite um comando" />
+          </div>
+            </section>
+
+            <div class="quick-commands">
+              <button>help</button>
+              <button>about</button>
+              <button>logs</button>
+              <button>status</button>
+              <button>online</button>
+              <button>download</button>
+              <button>discord</button>
+              <button>team</button>
+              <button>archive</button>
+              <button>clear</button>
+              <button>reboot</button>
+            </div>
+          </section>
+
+          <aside class="right-panel" aria-label="Monitor do sistema">
+            <section class="monitor-cards">
+              <!-- Reuse HUD cards -->
+              <div class="hud-panel">
+                <div class="hud-panel__header">
+                  <div>
+                    <p class="hud-panel__eyebrow">Módulo ALERTA</p>
+                    <h2>Monitor do Sistema</h2>
+                  </div>
+                  <div class="hud-panel__state">
+                    <span class="status-dot"></span>
+                    <span>Conexão estável</span>
+                  </div>
+                </div>
+                <div class="hud-grid">
+                  <article class="hud-card" style="--delay: 0.05s; --fill: 68%; --accent-color: #ff7a3d;">
+                    <span class="hud-card__label">CPU</span>
+                    <strong class="hud-card__value">68%</strong>
+                    <div class="hud-bar"><span></span></div>
+                  </article>
+
+                  <article class="hud-card" style="--delay: 0.1s; --fill: 74%; --accent-color: #ff3b3b;">
+                    <span class="hud-card__label">RAM</span>
+                    <strong class="hud-card__value">74%</strong>
+                    <div class="hud-bar"><span></span></div>
+                  </article>
+
+                  <article class="hud-card" style="--delay: 0.15s; --fill: 61%; --accent-color: #ffd166;">
+                    <span class="hud-card__label">Energia</span>
+                    <strong class="hud-card__value">61%</strong>
+                    <div class="hud-bar"><span></span></div>
+                  </article>
+
+                  <article class="hud-card" style="--delay: 0.2s; --fill: 59%; --accent-color: #ff6b6b;">
+                    <span class="hud-card__label">Temperatura</span>
+                    <strong class="hud-card__value">39°C</strong>
+                    <div class="hud-bar"><span></span></div>
+                  </article>
+
+                  <article class="hud-card" style="--delay: 0.25s; --fill: 35%; --accent-color: #5ee7df;">
+                    <span class="hud-card__label">Latência</span>
+                    <strong class="hud-card__value">12 ms</strong>
+                    <div class="hud-bar"><span></span></div>
+                  </article>
+
+                  <article class="hud-card" style="--delay: 0.3s; --fill: 50%; --accent-color: #7dd3fc;">
+                    <span class="hud-card__label">Ping</span>
+                    <strong class="hud-card__value">42 ms</strong>
+                    <div class="hud-bar"><span></span></div>
+                  </article>
+
+                  <article class="hud-card" style="--delay: 0.35s; --fill: 92%; --accent-color: #86f5a4;">
+                    <span class="hud-card__label">Integridade</span>
+                    <strong class="hud-card__value">92%</strong>
+                    <div class="hud-bar"><span></span></div>
+                  </article>
+
+                  <article class="hud-card" style="--delay: 0.4s; --fill: 7%; --accent-color: #b388ff;">
+                    <span class="hud-card__label">Contaminação</span>
+                    <strong class="hud-card__value">7%</strong>
+                    <div class="hud-bar"><span></span></div>
+                  </article>
+
+                  <article class="hud-card" style="--delay: 0.45s; --fill: 94%; --accent-color: #5ee7df;">
+                    <span class="hud-card__label">Oxigênio</span>
+                    <strong class="hud-card__value">94%</strong>
+                    <div class="hud-bar"><span></span></div>
+                  </article>
+
+                  <article class="hud-card" style="--delay: 0.5s; --fill: 84%; --accent-color: #f4a261;">
+                    <span class="hud-card__label">Pressão</span>
+                    <strong class="hud-card__value">1.02 atm</strong>
+                    <div class="hud-bar"><span></span></div>
+                  </article>
+
+                  <article class="hud-card hud-card--status" style="--delay: 0.55s; --accent-color: #86f5a4;">
+                    <span class="hud-card__label">Status Global</span>
+                    <strong class="hud-card__value">ESTÁVEL</strong>
+                    <div class="hud-card__status"><span class="status-dot"></span>Operação segura</div>
+                  </article>
+                </div>
+              </div>
+            </section>
+            <section class="threat-gauge">
+              <h4>Nível de Ameaça</h4>
+              <div class="gauge">7%</div>
+            </section>
+          </aside>
+
+        </div>
+      </main>
+
+      <footer>
+        <p class="terminal-footer-bar">STATUS: ONLINE | POPULAÇÃO: 0,03% | HORA DO SISTEMA: <span id="hora"></span></p>
+        <p>&copy; 2026 Projeto Exílio. Todos os direitos reservados.</p>
+      </footer>
+    </div>
+
+    <script src="js/boot.js"></script>
+    <script src="js/clock.js"></script>
+    <script src="js/terminal.js"></script>
+    <script src="js/commands.js"></script>
+    <script src="js/effects.js"></script>
+    <script src="js/sounds.js"></script>
+  </body>
+</html>
