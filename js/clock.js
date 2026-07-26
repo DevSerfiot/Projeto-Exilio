@@ -1,7 +1,15 @@
 /* Clock widget */
 (function () {
+  let rafId = 0;
+  let lastSecond = -1;
+
   function updateClock() {
     const now = new Date();
+    if (now.getSeconds() === lastSecond) {
+      return;
+    }
+    lastSecond = now.getSeconds();
+
     const hours = String(now.getHours()).padStart(2, '0');
     const minutes = String(now.getMinutes()).padStart(2, '0');
     const seconds = String(now.getSeconds()).padStart(2, '0');
@@ -25,8 +33,29 @@
     }
   }
 
-  document.addEventListener('DOMContentLoaded', () => {
+  function tick() {
+    if (!document.hidden) {
+      updateClock();
+    }
+
+    rafId = window.requestAnimationFrame(tick);
+  }
+
+  function startClock() {
+    if (rafId) return;
     updateClock();
-    setInterval(updateClock, 1000);
+    rafId = window.requestAnimationFrame(tick);
+  }
+
+  function stopClock() {
+    if (!rafId) return;
+    window.cancelAnimationFrame(rafId);
+    rafId = 0;
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    startClock();
   });
+
+  window.addEventListener('beforeunload', stopClock);
 })();

@@ -45,9 +45,16 @@
   const state = {
     running: false,
     timerId: null,
+    pageVisible: !document.hidden,
     activeBootListener: null,
     activeRestartListener: null
   };
+
+  function getPerfApi() {
+    return window.ExilioApp && window.ExilioApp.performance
+      ? window.ExilioApp.performance
+      : null;
+  }
 
   function randomBetween(min, max) {
     return Math.floor(min + Math.random() * (max - min + 1));
@@ -95,7 +102,7 @@
   }
 
   function scheduleNextEvent() {
-    if (!state.running) return;
+    if (!state.running || !state.pageVisible) return;
 
     const delayMs = randomBetween(MIN_DELAY_MS, MAX_DELAY_MS);
     state.timerId = setTimeout(() => {
@@ -155,6 +162,19 @@
   }
 
   function init() {
+    const perf = getPerfApi();
+    if (perf && typeof perf.watchPageVisibility === 'function') {
+      perf.watchPageVisibility((visible) => {
+        state.pageVisible = visible;
+        if (visible) {
+          scheduleNextEvent();
+        } else if (state.timerId) {
+          clearTimeout(state.timerId);
+          state.timerId = null;
+        }
+      });
+    }
+
     waitForBoot();
   }
 

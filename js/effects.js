@@ -20,6 +20,30 @@
     '.hud-panel__eyebrow'
   ];
 
+  const state = {
+    glitchTimerId: null,
+    interferenceTimerId: null,
+    running: false,
+    inViewport: true,
+    pageVisible: !document.hidden
+  };
+
+  function getPerfApi() {
+    return window.ExilioApp && window.ExilioApp.performance
+      ? window.ExilioApp.performance
+      : null;
+  }
+
+  function clearTimer(timerId) {
+    if (!timerId) return null;
+    clearTimeout(timerId);
+    return null;
+  }
+
+  function canRunDynamicEffects() {
+    return !REDUCED_MOTION && state.running && state.inViewport && state.pageVisible;
+  }
+
   function ensureStyles() {
     if (document.getElementById(EFFECT_STYLE_ID)) return;
 
@@ -207,8 +231,16 @@
     }
 
     function loop() {
+      if (!canRunDynamicEffects()) {
+        state.glitchTimerId = null;
+        return;
+      }
+
       const nextMs = 7000 + Math.random() * 10000;
-      setTimeout(() => {
+      state.glitchTimerId = setTimeout(() => {
+        state.glitchTimerId = null;
+        if (!canRunDynamicEffects()) return;
+
         triggerOne();
         if (Math.random() > 0.75) {
           setTimeout(triggerOne, 120 + Math.random() * 180);
@@ -232,8 +264,16 @@
     }
 
     function loop() {
+      if (!canRunDynamicEffects()) {
+        state.interferenceTimerId = null;
+        return;
+      }
+
       const nextMs = 9000 + Math.random() * 15000;
-      setTimeout(() => {
+      state.interferenceTimerId = setTimeout(() => {
+        state.interferenceTimerId = null;
+        if (!canRunDynamicEffects()) return;
+
         burst();
         if (Math.random() > 0.82) {
           setTimeout(burst, 120);
@@ -245,17 +285,42 @@
     loop();
   }
 
+  function startDynamicEffects() {
+    if (state.running) return;
+    state.running = true;
+    scheduleGlitchBursts();
+    scheduleInterference();
+  }
+
+  function stopDynamicEffects() {
+    state.running = false;
+    state.glitchTimerId = clearTimer(state.glitchTimerId);
+    state.interferenceTimerId = clearTimer(state.interferenceTimerId);
+
+    const interference = document.querySelector('.fx-interference');
+    if (interference) {
+      interference.classList.remove('is-on');
+    }
+  }
+
   function setupCinematicHover() {
     if (REDUCED_MOTION || window.matchMedia('(hover: none)').matches) return;
 
-    let rafId = 0;
-
     const elements = document.querySelectorAll('.fx-cinematic');
     elements.forEach((element) => {
+      let rafId = 0;
       let entered = false;
+      let rect = null;
+
+      const resetTransform = () => {
+        element.style.transform = 'perspective(700px) rotateX(0deg) rotateY(0deg) translateZ(0)';
+      };
 
       element.addEventListener('pointermove', (event) => {
-        const rect = element.getBoundingClientRect();
+        if (!rect) {
+          rect = element.getBoundingClientRect();
+        }
+
         const x = (event.clientX - rect.left) / rect.width;
         const y = (event.clientY - rect.top) / rect.height;
 
@@ -269,16 +334,18 @@
 
       element.addEventListener('pointerenter', () => {
         entered = true;
+        rect = element.getBoundingClientRect();
       }, { passive: true });
 
       element.addEventListener('pointerleave', () => {
         entered = false;
-        element.style.transform = 'perspective(700px) rotateX(0deg) rotateY(0deg) translateZ(0)';
+        rect = null;
+        resetTransform();
       }, { passive: true });
 
       element.addEventListener('blur', () => {
         if (!entered) {
-          element.style.transform = 'perspective(700px) rotateX(0deg) rotateY(0deg) translateZ(0)';
+          resetTransform();
         }
       });
     });
@@ -301,12 +368,48 @@
   }
 
   function initEffects() {
+    const perf = getPerfApi();
+
+    if (perf && typeof perf.enableLazyMedia === 'function') {
+      perf.enableLazyMedia(document);
+    }
+
     ensureStyles();
     ensureLayer();
     applyBaseClasses();
-    scheduleGlitchBursts();
-    scheduleInterference();
     setupCinematicHover();
+
+    if (perf && typeof perf.observeVisibility === 'function') {
+      const shell = document.getElementById('app-shell') || document.body;
+      perf.observeVisibility(shell, {
+        threshold: 0.08,
+        onEnter: () => {
+          state.inViewport = true;
+          if (!document.hidden) {
+            startDynamicEffects();
+          }
+        },
+        onExit: () => {
+          state.inViewport = false;
+          stopDynamicEffects();
+        }
+      });
+    }
+
+    if (perf && typeof perf.watchPageVisibility === 'function') {
+      perf.watchPageVisibility((visible) => {
+        state.pageVisible = visible;
+        if (visible && state.inViewport) {
+          startDynamicEffects();
+        } else {
+          stopDynamicEffects();
+        }
+      });
+    }
+
+    if (!document.hidden) {
+      startDynamicEffects();
+    }
 
     const output = document.getElementById('terminal-output');
     if (output) output.classList.add('is-ready');

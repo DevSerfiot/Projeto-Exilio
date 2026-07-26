@@ -1,12 +1,12 @@
 /* UI animations, transitions, and motion effects */
 .hidden-text {
-  opacity: 0;
-  transform: translateY(6px);
+  opacity: var(--motion-hidden-opacity, 0);
+  transform: translateY(var(--motion-offset-y, 6px));
   transition: opacity 220ms ease, transform 220ms ease;
 }
 
 .hidden-text.visible {
-  opacity: 1;
+  opacity: var(--motion-visible-opacity, 1);
   transform: translateY(0);
 }
 
@@ -193,7 +193,7 @@
     opacity: 1;
   }
   50% {
-    opacity: 0.3;
+    opacity: var(--fx-blink-opacity-min, 0.3);
   }
 }
 
@@ -205,5 +205,25 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glitch-text,
+  .hud-card,
+  .hud-card::before,
+  .terminal-cursor,
+  .blink,
+  .alert-blink,
+  body::after {
+    animation: none !important;
+  }
+
+  .hidden-text,
+  .timeline-item,
+  .app-shell {
+    transition: none !important;
+    transform: none !important;
+    opacity: 1 !important;
   }
 }

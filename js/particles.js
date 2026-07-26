@@ -19,6 +19,13 @@
   };
 
   let engine = null;
+  let appInView = true;
+
+  function getPerfApi() {
+    return window.ExilioApp && window.ExilioApp.performance
+      ? window.ExilioApp.performance
+      : null;
+  }
 
   function clamp(value, min, max) {
     return Math.min(max, Math.max(min, value));
@@ -221,7 +228,7 @@
     engine = createEngine(layer);
     if (!engine) return;
 
-    if (!document.hidden) {
+    if (!document.hidden && appInView) {
       engine.start();
     }
   }
@@ -234,15 +241,54 @@
 
   function handleVisibilityChange() {
     if (!engine) return;
-    if (document.hidden) {
+    if (document.hidden || !appInView) {
       engine.stop();
     } else {
       engine.start();
     }
   }
 
-  document.addEventListener('DOMContentLoaded', createParticles);
-  window.addEventListener('resize', handleResize, { passive: true });
+  function observeAppVisibility() {
+    const perf = getPerfApi();
+    if (!perf || typeof perf.observeVisibility !== 'function') {
+      return;
+    }
+
+    const shell = document.getElementById('app-shell') || document.body;
+    perf.observeVisibility(shell, {
+      threshold: 0.05,
+      onEnter: () => {
+        appInView = true;
+        handleVisibilityChange();
+      },
+      onExit: () => {
+        appInView = false;
+        handleVisibilityChange();
+      }
+    });
+  }
+
+  function initParticles() {
+    const perf = getPerfApi();
+
+    observeAppVisibility();
+
+    if (perf && typeof perf.runWhenIdle === 'function') {
+      perf.runWhenIdle(createParticles, 1400);
+      return;
+    }
+
+    setTimeout(createParticles, 180);
+  }
+
+  document.addEventListener('DOMContentLoaded', initParticles);
+
+  const perfApi = getPerfApi();
+  const resizeHandler = perfApi && typeof perfApi.rafThrottle === 'function'
+    ? perfApi.rafThrottle(handleResize)
+    : handleResize;
+
+  window.addEventListener('resize', resizeHandler, { passive: true });
   document.addEventListener('visibilitychange', handleVisibilityChange);
 
   window.ExilioApp = window.ExilioApp || {};

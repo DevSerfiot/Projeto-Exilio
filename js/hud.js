@@ -3,6 +3,7 @@
   const HUD_NAMESPACE = 'ExilioApp';
   const UPDATE_MIN_MS = 2000;
   const UPDATE_MAX_MS = 6000;
+  const TARGET_FRAME_MS = 1000 / 24;
 
   const METRIC_DEFINITIONS = [
     { label: 'CPU', kind: 'percent', min: 42, max: 91, baseline: 68, step: 5.8, wobble: 1.1, speed: 0.33, motion: 'volatile' },
@@ -35,6 +36,9 @@
   let animationFrameId = null;
   let running = false;
   let metrics = [];
+  let hudInViewport = true;
+  let pageVisible = !document.hidden;
+  let lastFrameAt = 0;
 
   function getApp() {
     return window[HUD_NAMESPACE] || (window[HUD_NAMESPACE] = {});
@@ -42,6 +46,12 @@
 
   function clamp(value, min, max) {
     return Math.min(max, Math.max(min, value));
+  }
+
+  function getPerfApi() {
+    return window.ExilioApp && window.ExilioApp.performance
+      ? window.ExilioApp.performance
+      : null;
   }
 
   function randBetween(min, max) {
@@ -378,6 +388,17 @@
       return;
     }
 
+    if (!lastFrameAt) {
+      lastFrameAt = now;
+    }
+
+    if (now - lastFrameAt < TARGET_FRAME_MS) {
+      animationFrameId = window.requestAnimationFrame(tick);
+      return;
+    }
+
+    lastFrameAt = now;
+
     for (const metric of metrics) {
       if (now >= metric.nextUpdateAt) {
         pickNextTarget(metric);
@@ -397,15 +418,18 @@
       return;
     }
 
-    metrics = METRIC_DEFINITIONS
-      .map(createMetricState)
-      .filter(Boolean);
+    if (!metrics.length) {
+      metrics = METRIC_DEFINITIONS
+        .map(createMetricState)
+        .filter(Boolean);
+    }
 
     if (!metrics.length) {
       return;
     }
 
     running = true;
+    lastFrameAt = 0;
     animationFrameId = window.requestAnimationFrame(tick);
   }
 
@@ -431,9 +455,47 @@
     }
   }
 
+  function updateRunState() {
+    const shouldRun = pageVisible && hudInViewport;
+    if (shouldRun) {
+      start();
+      return;
+    }
+
+    stop();
+  }
+
+  function bindVisibilityControls() {
+    const perf = getPerfApi();
+    if (!perf) return;
+
+    if (typeof perf.observeVisibility === 'function') {
+      const panel = document.querySelector('.right-panel') || document.querySelector('.hud-panel');
+      perf.observeVisibility(panel, {
+        threshold: 0.08,
+        onEnter: () => {
+          hudInViewport = true;
+          updateRunState();
+        },
+        onExit: () => {
+          hudInViewport = false;
+          updateRunState();
+        }
+      });
+    }
+
+    if (typeof perf.watchPageVisibility === 'function') {
+      perf.watchPageVisibility((visible) => {
+        pageVisible = visible;
+        updateRunState();
+      });
+    }
+  }
+
   function init() {
     updateStatusPill('ONLINE');
-    start();
+    bindVisibilityControls();
+    updateRunState();
   }
 
   if (document.readyState === 'loading') {

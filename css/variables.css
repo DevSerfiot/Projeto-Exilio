@@ -20,4 +20,10 @@
   --terminal-height: 340px;
   --transition-fast: 180ms ease;
   --transition-smooth: 320ms ease;
+  --motion-offset-y: 6px;
+  --motion-hover-lift: -2px;
+  --motion-panel-enter: 16px;
+  --motion-hidden-opacity: 0;
+  --motion-visible-opacity: 1;
+  --fx-blink-opacity-min: 0.3;
 }

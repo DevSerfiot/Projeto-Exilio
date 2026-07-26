@@ -1,115 +1,201 @@
-/* Responsive layout rules for desktop, tablet, and mobile */
+/*
+  Módulo 14 - Responsividade
+  Estratégia: mobile first, grid/flex para todos os breakpoints,
+  com contenção de largura para evitar quebra de layout.
+*/
 
-/* Large screens / desktop */
-@media (min-width: 1200px) {
-  .console-screen {
-    max-width: 1120px;
-    padding: 32px;
-  }
-
-  .hud-panel {
-    padding: 22px;
-  }
-
-  .hud-grid {
-    gap: 16px;
-  }
-
-  .terminal-output {
-    min-height: 380px;
-  }
+/* Base anti-overflow */
+html,
+body {
+  max-width: 100%;
+  overflow-x: clip;
 }
 
-/* Notebook / small desktop */
-@media (max-width: 1199px) {
+* {
+  min-width: 0;
+}
+
+img,
+video,
+canvas,
+svg,
+iframe {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.layout-grid,
+.system-header,
+.console-screen,
+.startup-terminal,
+.terminal-input-shell,
+.page-view,
+.hud-panel,
+.terminal-output {
+  width: 100%;
+  max-width: 100%;
+}
+
+.console-line,
+.page-view,
+.page-view p,
+.page-view li,
+#terminal-input,
+.prompt {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.layout-grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.terminal-toolbar,
+.header-status,
+.quick-commands {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+/* CELULAR - até 767px */
+@media (max-width: 767px) {
   main {
-    padding: 22px;
+    padding: 12px;
   }
 
-  .console-screen {
-    padding: 26px;
-  }
-
-  .hud-panel {
-    padding: 20px;
-  }
-
-  .hud-grid {
-    gap: 14px;
-  }
-}
-
-/* Tablet */
-@media (max-width: 992px) {
   .system-header {
+    margin: 10px auto 0;
+    padding: 10px 12px;
+    border-radius: 12px;
     flex-direction: column;
     align-items: stretch;
-    gap: 14px;
+    gap: 12px;
   }
 
-  .brand {
-    width: 100%;
+  .window-controls {
+    display: none;
   }
 
   .header-status {
-    width: 100%;
-    justify-content: space-between;
-    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 8px;
   }
 
   .clock-block {
-    min-width: 0;
     width: 100%;
+    min-width: 0;
     padding-left: 0;
-    border-left: none;
+    border-left: 0;
     border-top: 1px solid rgba(255, 60, 60, 0.12);
-    margin-top: 10px;
-    padding-top: 10px;
+    padding-top: 8px;
+    margin-top: 4px;
     flex-direction: row;
+    align-items: center;
     justify-content: space-between;
   }
 
-  .console-header,
-  .hud-panel__header {
-    flex-direction: column;
-    align-items: flex-start;
+  .layout-grid {
+    margin: 10px auto 14px;
+    padding: 0;
+    gap: 12px;
+  }
+
+  .left-nav,
+  .center-panel,
+  .right-panel {
+    padding: 12px;
+  }
+
+  .left-nav {
+    order: 2;
+  }
+
+  .center-panel {
+    order: 1;
+  }
+
+  .right-panel {
+    order: 3;
+  }
+
+  .console-screen {
+    margin: 0;
+    padding: 0;
+  }
+
+  .terminal-output {
+    min-height: 220px;
+    max-height: 50vh;
+    padding: 10px;
   }
 
   .hud-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
   }
 
-  .terminal-input-row {
-    flex-direction: column;
-    align-items: stretch;
+  .terminal-toolbar {
+    gap: 8px;
+  }
+
+  .terminal-action,
+  .audio-toggle,
+  .quick-commands button {
+    flex: 1 1 100%;
   }
 
   .terminal-input-shell {
     flex-direction: column;
     gap: 8px;
+    padding: 12px;
   }
 
   .prompt {
-    margin-bottom: 8px;
+    font-size: 0.82rem;
+    padding-top: 0;
   }
 
-  .terminal-output {
-    min-height: 300px;
+  .page-view {
+    margin: 14px 0 12px;
+    padding: 14px;
+  }
+
+  .startup-overlay {
+    padding: 12px;
+  }
+
+  .startup-terminal {
+    padding: 14px;
+  }
+
+  .startup-output {
+    min-height: 190px;
+  }
+
+  footer {
+    padding: 14px 12px 18px;
+  }
+
+  .terminal-footer-bar {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
   }
 }
 
-/* Mobile / celular */
-@media (max-width: 768px) {
+/* TABLET - 768px a 1023px */
+@media (min-width: 768px) and (max-width: 1023px) {
   main {
     padding: 16px;
   }
 
-  .console-screen {
-    padding: 20px;
-  }
-
   .system-header {
-    margin: 0 0 12px;
+    margin: 14px auto 0;
+    padding: 12px 14px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
   }
 
   .header-status {
@@ -117,143 +203,185 @@
     gap: 8px;
   }
 
-  .status-pill {
-    padding: 6px 9px;
-    font-size: 0.7rem;
+  .clock-block {
+    width: 100%;
+    min-width: 0;
+    border-left: 0;
+    padding-left: 0;
+    border-top: 1px solid rgba(255, 60, 60, 0.12);
+    margin-top: 6px;
+    padding-top: 8px;
+    flex-direction: row;
+    justify-content: space-between;
   }
 
-  .hud-panel {
-    padding: 16px;
+  .layout-grid {
+    margin: 14px auto 18px;
+    padding: 0;
+    gap: 14px;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "center"
+      "right"
+      "left";
+  }
+
+  .center-panel {
+    grid-area: center;
+    padding: 14px;
+  }
+
+  .right-panel {
+    grid-area: right;
+    padding: 14px;
+  }
+
+  .left-nav {
+    grid-area: left;
+    padding: 14px;
   }
 
   .hud-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
   }
 
   .terminal-output {
     min-height: 260px;
+    max-height: 48vh;
   }
 
-  .page-view {
-    margin: 18px 0 14px;
-    padding: 16px;
-  }
-
-  #terminal-input {
-    padding: 12px 14px;
+  .terminal-input-shell {
+    gap: 10px;
   }
 }
 
-/* Extra small phones */
-@media (max-width: 600px) {
-  .console-screen {
+/* NOTEBOOK - 1024px a 1365px */
+@media (min-width: 1024px) and (max-width: 1365px) {
+  main {
     padding: 18px;
-  }
-
-  .console-header h1 {
-    font-size: 1rem;
-  }
-
-  .console-header span {
-    font-size: 0.82rem;
-  }
-
-  .hud-panel__state {
-    width: 100%;
-    justify-content: flex-start;
-  }
-
-  .hud-card {
-    padding: 12px;
-  }
-
-  .hud-card__value {
-    font-size: 0.95rem;
-  }
-
-  .terminal-output {
-    min-height: 220px;
-  }
-
-  .terminal-toolbar {
-    flex-direction: column;
-  }
-
-  .terminal-action,
-  .audio-toggle {
-    width: 100%;
-  }
-
-  .prompt {
-    font-size: 0.85rem;
-  }
-
-  .startup-terminal {
-    padding: 18px;
-  }
-
-  .startup-output {
-    min-height: 200px;
-  }
-
-  footer {
-    padding: 16px 18px 24px;
-  }
-}
-
-@media (max-width: 480px) {
-  header,
-  main,
-  footer {
-    padding-left: 14px;
-    padding-right: 14px;
   }
 
   .system-header {
-    margin-bottom: 10px;
+    max-width: 1200px;
+    margin: 16px auto 0;
+    padding: 12px 14px;
   }
 
-  .brand {
-    gap: 10px;
+  .layout-grid {
+    max-width: 1200px;
+    margin: 16px auto 20px;
+    padding: 0;
+    gap: 14px;
+    grid-template-columns: minmax(180px, 220px) minmax(0, 1fr) minmax(250px, 290px);
   }
 
-  .brand-name {
-    font-size: 0.8rem;
-  }
-
-  .brand-system {
-    font-size: 0.72rem;
-  }
-
-  .status-pill {
-    padding: 6px 8px;
-    font-size: 0.67rem;
-  }
-
-  .clock-block {
-    width: 100%;
-    border-top: 1px solid rgba(255, 60, 60, 0.12);
-    margin-top: 10px;
-    padding-top: 10px;
-  }
-
-  .page-view h2 {
-    font-size: 1rem;
-  }
-
-  .page-view {
+  .left-nav,
+  .center-panel,
+  .right-panel {
     padding: 14px;
   }
 
-  .hud-card__label {
-    font-size: 0.66rem;
+  .hud-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
   }
 
-  .hud-card__value {
-    font-size: 0.95rem;
+  .terminal-output {
+    min-height: 280px;
+    max-height: 430px;
   }
 
-  footer p {
-    font-size: 0.82rem;
+  .quick-commands button {
+    flex: 1 1 calc(33.333% - 10px);
+  }
+}
+
+/* DESKTOP - 1366px a 1599px */
+@media (min-width: 1366px) and (max-width: 1599px) {
+  .system-header {
+    max-width: 1320px;
+    margin: 18px auto 0;
+    padding: 12px 16px;
+  }
+
+  .layout-grid {
+    max-width: 1320px;
+    margin: 18px auto 24px;
+    gap: 16px;
+    grid-template-columns: minmax(220px, 250px) minmax(0, 1fr) minmax(290px, 330px);
+  }
+
+  .left-nav,
+  .center-panel,
+  .right-panel {
+    padding: 16px;
+  }
+
+  .hud-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .terminal-output {
+    min-height: 320px;
+    max-height: 460px;
+  }
+
+  .quick-commands button {
+    flex: 0 1 auto;
+  }
+}
+
+/* ULTRAWIDE - 1600px+ */
+@media (min-width: 1600px) {
+  :root {
+    --terminal-height: 400px;
+  }
+
+  main {
+    padding: 26px;
+  }
+
+  .system-header {
+    max-width: 1680px;
+    margin: 24px auto 0;
+    padding: 14px 20px;
+  }
+
+  .layout-grid {
+    max-width: 1680px;
+    margin: 22px auto 28px;
+    gap: 20px;
+    grid-template-columns: minmax(250px, 290px) minmax(0, 1fr) minmax(340px, 390px);
+  }
+
+  .left-nav,
+  .center-panel,
+  .right-panel {
+    padding: 20px;
+  }
+
+  .hud-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .terminal-output {
+    min-height: 400px;
+    max-height: 56vh;
+    padding: 14px 16px;
+  }
+
+  .console-header h1 {
+    font-size: 1.16rem;
+  }
+
+  .quick-commands {
+    gap: 12px;
+  }
+
+  .quick-commands button {
+    padding: 10px 16px;
   }
 }

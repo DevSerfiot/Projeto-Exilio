@@ -9,7 +9,10 @@
     autocompleteItems: [],
     autocompleteIndex: -1,
     commandQueue: Promise.resolve(),
-    renderAudioTickAt: 0
+    renderAudioTickAt: 0,
+    scrollRafId: 0,
+    inputResizeRafId: 0,
+    pendingInputForResize: null
   };
 
   function getPromptLabel() {
@@ -57,7 +60,26 @@
     if (!output) return;
 
     output.scrollTop = output.scrollHeight;
-    output.scrollTo({ top: output.scrollHeight, behavior: 'smooth' });
+  }
+
+  function scheduleTerminalScroll(force = false) {
+    const output = document.getElementById('terminal-output');
+    if (!output) return;
+
+    // Evita forcar scroll quando usuario esta navegando historico manualmente.
+    if (!force) {
+      const distanceToBottom = output.scrollHeight - output.scrollTop - output.clientHeight;
+      if (distanceToBottom > 84) {
+        return;
+      }
+    }
+
+    if (state.scrollRafId) return;
+
+    state.scrollRafId = requestAnimationFrame(() => {
+      state.scrollRafId = 0;
+      scrollTerminalToBottom();
+    });
   }
 
   function typeTextIntoElement(element, text, callback) {
@@ -71,6 +93,7 @@
     function stepChar() {
       if (i < text.length) {
         element.textContent += text.charAt(i);
+        scheduleTerminalScroll();
         if (window.ExilioApp && typeof window.ExilioApp.playSound === 'function') {
           const now = performance.now();
           if (now - state.renderAudioTickAt >= 42) {
@@ -125,7 +148,7 @@
       if (typeof callback === 'function') {
         callback();
       }
-      setTimeout(scrollTerminalToBottom, 40);
+      scheduleTerminalScroll(true);
       return;
     }
 
@@ -133,7 +156,7 @@
       if (typeof callback === 'function') {
         callback();
       }
-      setTimeout(scrollTerminalToBottom, 40);
+      scheduleTerminalScroll(true);
     });
   }
 
@@ -163,7 +186,7 @@
       if (typeof callback === 'function') {
         callback();
       }
-      requestAnimationFrame(scrollTerminalToBottom);
+      scheduleTerminalScroll(true);
     });
   }
 
@@ -185,16 +208,6 @@
     if (!output) return;
 
     output.querySelectorAll('.caret').forEach((node) => node.remove());
-
-    const observer = new MutationObserver(() => {
-      scrollTerminalToBottom();
-    });
-
-    observer.observe(output, {
-      childList: true,
-      subtree: true,
-      characterData: true
-    });
   }
 
   function syncPromptLabels() {
@@ -206,8 +219,22 @@
 
   function autoResizeInput(input) {
     if (!input || input.tagName !== 'TEXTAREA') return;
-    input.style.height = 'auto';
-    input.style.height = `${Math.min(input.scrollHeight, 148)}px`;
+
+    state.pendingInputForResize = input;
+    if (state.inputResizeRafId) return;
+
+    state.inputResizeRafId = requestAnimationFrame(() => {
+      state.inputResizeRafId = 0;
+      const activeInput = state.pendingInputForResize;
+      if (!activeInput) return;
+
+      activeInput.style.height = 'auto';
+      const nextHeight = Math.min(activeInput.scrollHeight, 148);
+      const heightAsText = `${nextHeight}px`;
+      if (activeInput.style.height !== heightAsText) {
+        activeInput.style.height = heightAsText;
+      }
+    });
   }
 
   function getSelectionIndex(input) {
@@ -543,7 +570,7 @@
   document.addEventListener('DOMContentLoaded', () => {
     setupTerminalOutput();
     setupTerminalInput();
-    scrollTerminalToBottom();
+    scheduleTerminalScroll(true);
   });
 
   window.addEventListener('boot:complete', () => {

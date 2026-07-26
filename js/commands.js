@@ -585,6 +585,108 @@
     }
   ];
 
+  const CONTACT_SIGNAL_MESSAGES = [
+    'Um pulso curto bateu no canal 03 e sumiu antes da triangulação.',
+    'A antena externa recebeu um pedido de socorro sem remetente.',
+    'Um pacote sem checksum atravessou o firewall com assinatura humana.',
+    'A telemetria ouviu três batidas metálicas no vazio do setor norte.',
+    'Sinal em banda morta ressurgiu com voz distorcida por eco térmico.',
+    'Um canal desativado há anos voltou a transmitir por sete segundos.',
+    'Ruído branco organizou sílabas e formou um nome incompleto.',
+    'A portadora de emergência abriu, respirou e caiu em silêncio.',
+    'Fragmentos de fala apareceram entre duas descargas estáticas.',
+    'Um emissor clandestino tentou sincronizar com o núcleo local.',
+    'Mensagem repetida do setor leste insiste em chamar pelo operador.',
+    'Sinal de baixa frequência trouxe coordenadas parcialmente legíveis.',
+    'Um pacote criptografado retornou com chave que não existe no banco.',
+    'Canal primário recebeu resposta sem ter enviado requisição.',
+    'A estação captou um coro distante em frequência de manutenção.',
+    'Há interferência com ritmo de batimento cardíaco no rádio externo.',
+    'Um beacon apagado voltou a piscar no mapa de longo alcance.',
+    'O nó B-14 ouviu uma contagem regressiva e perdeu o lock.',
+    'Um handshake incompleto se repete no mesmo milissegundo a cada minuto.',
+    'Pacote de voz chegou com atraso impossível e metadados futuros.',
+    'Frequência militar antiga respondeu ao seu último comando.',
+    'Chiado contínuo abriu um corredor de áudio por dois segundos.',
+    'Uma frase invertida foi detectada no canal de inspeção orbital.',
+    'Sinal analógico atravessou o casco e contaminou o buffer.',
+    'A malha de rádio registrou assinatura de usuário arquivado.',
+    'Um pedido de extração foi recebido de um setor sem atmosfera.',
+    'Canal de contingência ecoou seu próprio prompt em voz humana.',
+    'A torre remota transmitiu uma palavra e entrou em blackout.',
+    'Pacotes fantasmas foram roteados para uma porta inexistente.',
+    'O terminal escutou passos no áudio de fundo da transmissão.',
+    'Uma baliza de evacuação chamou por tripulantes já removidos.',
+    'Sinal espelhado repetiu sua identificação com um segundo de atraso.',
+    'Interferência em dente de serra carregava um pedido de volta.',
+    'A camada de ruído trouxe latitude sem longitude correspondente.',
+    'Canal 9 reportou voz infantil contando portas metálicas.',
+    'Pacote binário traduziu para a frase: nao desligue as luzes.',
+    'A frequência de manutenção executou tons de chamada funerária.',
+    'Um transmissor sem energia respondeu ao ping de diagnóstico.',
+    'A comunicação externa exibiu rastros de risos abafados.',
+    'Sinal de radar colidiu com áudio e gerou palavras truncadas.',
+    'A matriz de antenas captou um pedido de ancoragem negado.',
+    'Um eco de rádio descreveu o corredor 03 sem nunca entrar nele.',
+    'Pacote sem cabeçalho insistiu em abrir sessão administrativa.',
+    'A banda de socorro tocou uma melodia em código Morse.',
+    'Três nós remotos ouviram a mesma frase com vozes diferentes.',
+    'O transceptor principal recebeu um adeus antes do contato.',
+    'Uma chamada muda ficou presa no canal até expirar.',
+    'A linha de comando foi lida em voz alta por alguém distante.',
+    'Sinal degradado trouxe o mesmo número em todos os campos.',
+    'A placa de rádio aqueceu sem carga e sem tráfego aparente.',
+    'Canal periférico detectou respiração entre blocos de dados.',
+    'Um ruído pulsante escreveu "estamos perto" no espectrograma.',
+    'Mensagem compactada abriu com a frase: porta interna comprometida.',
+    'Frequência civil morta retornou com alerta de casco violado.',
+    'A bússola de comunicação apontou para um transmissor inexistente.',
+    'Nó de backup reportou uma resposta que ninguém enviou.',
+    'Sinal de retorno trouxe o nome da estação com grafia corrompida.',
+    'Pacote de emergência exigiu autenticação e recusou todas as chaves.',
+    'A camada de rede ouviu um chamado em idioma não catalogado.',
+    'Canal interno repetiu uma oração técnica de desligamento.',
+    'O relé sul captou uma gargalhada curta e voltou ao ruído.',
+    'Um identificador órfão tentou se registrar como tripulante.',
+    'Transmissão de longo alcance descreveu a sua sala com precisão.',
+    'A frequência de carga recebeu coordenadas para lugar sem mapa.',
+    'Blocos de áudio chegaram com lacunas em padrão de código.',
+    'Uma chamada insistente pedia abertura da escotilha C.',
+    'A rede externa acusou colisão entre dois sinais idênticos.',
+    'Canal seguro mostrou tráfego com assinatura de protocolo extinto.',
+    'Um pacote de texto chegou vazio, exceto por um ponto final.',
+    'Sinal de socorro trouxe um cronômetro em contagem negativa.',
+    'A cabine de rádio ouviu o seu nome vindo do corredor vazio.',
+    'Portadora breve carregou a frase: mantenha o farol aceso.',
+    'O analisador espectral encontrou choro em frequência de motor.',
+    'Canal de missão recebeu rota para orbita já destruída.',
+    'Um transmissor oculto pediu confirmação de vida local.',
+    'A malha de antenas detectou batidas que formam SOS.',
+    'Sinal cifrado usou sua senha antiga e falhou por um caractere.',
+    'Nó externo apresentou latência infinita e ainda assim respondeu.',
+    'Uma voz emendada por estática dizia para nao olhar para trás.',
+    'O canal de reparo enviou instruções para fechar uma porta aberta.',
+    'Pacote incompleto descreveu cheiro de ozônio no convés zero.',
+    'A antena dorsal registrou pedido de pouso sem veículo no radar.',
+    'Frequência de segurança ouviu sussurros entre códigos de erro.',
+    'Canal auxiliar transmitiu silêncio com assinatura de comando.',
+    'Sinal marítimo antigo apareceu no espaço e pediu rumo norte.',
+    'A torre principal perdeu sincronismo após uma única palavra.',
+    'Mensagem de manutenção citou um técnico fora da folha há 8 anos.',
+    'Um beacon cego indicou vida no setor de quarentena.',
+    'Canal de logs recebeu arquivo de áudio sem duração definida.',
+    'Ruído granular ocultava uma sequência de coordenadas quebradas.',
+    'Sinal intermitente repetiu "abrigo" em quatro tonalidades.',
+    'A rota de transmissão curvou para dentro do próprio núcleo.',
+    'Um eco tardio pediu para responder antes de receber.',
+    'A banda reservada abriu um contato e fechou sem despedida.',
+    'Canal de engenharia captou um comando para travar todas as portas.',
+    'O rádio profundo ouviu alguém contando até treze e reiniciando.',
+    'Pacote final chegou marcado com prioridade impossível.',
+    'A janela de contato mostrou assinatura térmica sem corpo emissor.',
+    'Sinal de retorno escreveu: se ouvir isto, ja foi tarde.'
+  ];
+
   function isValidDownloadPassword(value) {
     try {
       return btoa(String(value).split('').reverse().join('')) === DOWNLOAD_PASSWORD_SECRET;
@@ -926,14 +1028,21 @@
       renderTerminalPage(command);
 
       const selectedNarrative = pickRandomItem(CONTACT_NARRATIVES) || CONTACT_NARRATIVES[0];
+      const selectedSignalMessage = pickRandomItem(CONTACT_SIGNAL_MESSAGES) || selectedNarrative.message;
       const useNarrativeMode = Math.random() < 0.72;
+      const defaultContactTitle = pickRandomItem([
+        'Contato de Rádio',
+        'Canal Secundário',
+        'Sinal Interceptado',
+        'Transmissão Instável'
+      ]) || 'Contato de Rádio';
 
       const notificationTitle = useNarrativeMode
         ? maybeCorruptText(selectedNarrative.title, 0.46, 0.12)
-        : 'Contato de Rádio';
+        : defaultContactTitle;
       const notificationMessage = useNarrativeMode
-        ? maybeCorruptText(selectedNarrative.message, 0.62, 0.18)
-        : 'Chiado detectado no canal de rádio. Possível tentativa de contato.';
+        ? maybeCorruptText(selectedSignalMessage, 0.62, 0.18)
+        : selectedSignalMessage;
 
       if (window.ExilioApp && window.ExilioApp.notifications && typeof window.ExilioApp.notifications.alert === 'function') {
         window.ExilioApp.notifications.alert(notificationMessage, {
@@ -947,11 +1056,16 @@
       }
 
       lines.push({
-        text: maybeCorruptText('Alerta emitido: tentativa de contato registrada no canal secundário.', 0.38, 0.11),
+        text: maybeCorruptText(`Alerta emitido: ${selectedSignalMessage}`, 0.38, 0.11),
         className: 'console-line alert'
       });
 
       if (useNarrativeMode) {
+        lines.push({
+          text: maybeCorruptText(selectedSignalMessage, 0.7, 0.2),
+          className: 'console-line status-line'
+        });
+
         const narrativeLines = (selectedNarrative.terminal || []).map((text) => ({
           text: maybeCorruptText(text, 0.68, 0.2),
           className: 'console-line status-line'
