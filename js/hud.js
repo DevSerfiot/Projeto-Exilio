@@ -351,7 +351,31 @@
     if (online) {
       online.classList.add('alert-blink');
       if (stateLabel) {
-        online.textContent = stateLabel;
+        Array.from(online.childNodes).forEach((node) => {
+          if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
+            online.removeChild(node);
+          }
+        });
+
+        let dot = online.querySelector('.status-dot');
+        if (!dot) {
+          dot = document.createElement('span');
+          dot.className = 'status-dot';
+          online.prepend(dot);
+        }
+
+        let label = online.querySelector('.status-pill__label');
+        if (!label) {
+          label = document.createElement('span');
+          label.className = 'status-pill__label';
+          if (dot.nextSibling) {
+            online.insertBefore(label, dot.nextSibling);
+          } else {
+            online.appendChild(label);
+          }
+        }
+
+        label.textContent = stateLabel;
       }
     }
   }

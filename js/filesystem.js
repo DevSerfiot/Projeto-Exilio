@@ -262,12 +262,20 @@
   }
 
   function walkTree(node, absPath, visitor) {
-    visitor(node, absPath);
-    if (node.type !== 'dir') {
+    if (!node || typeof node !== 'object') {
       return;
     }
 
-    (node.children || []).forEach((child) => {
+    visitor(node, absPath);
+    if (node.type !== 'dir' || !Array.isArray(node.children)) {
+      return;
+    }
+
+    node.children.forEach((child) => {
+      if (!child || typeof child.name !== 'string') {
+        return;
+      }
+
       const childPath = normalizePath(`${absPath}/${child.name}`);
       walkTree(child, childPath, visitor);
     });

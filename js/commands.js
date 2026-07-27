@@ -793,9 +793,10 @@
   }
 
   function getHistoryLines() {
-    const history = window.ExilioApp && typeof window.ExilioApp.getCommandHistory === 'function'
+    const historyValue = window.ExilioApp && typeof window.ExilioApp.getCommandHistory === 'function'
       ? window.ExilioApp.getCommandHistory()
       : [];
+    const history = Array.isArray(historyValue) ? historyValue : [];
 
     if (!history.length) {
       return [

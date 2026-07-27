@@ -420,13 +420,31 @@
     autoResizeInput(input);
     hideAutocomplete(input);
 
-    state.commandQueue = state.commandQueue.then(() => new Promise((resolve) => {
+    state.commandQueue = state.commandQueue
+      .catch(() => undefined)
+      .then(() => new Promise((resolve) => {
       renderCommandEntry(value, () => {
-        const execution = window.ExilioApp.executeCommand(value);
+        let execution;
+        try {
+          execution = window.ExilioApp && typeof window.ExilioApp.executeCommand === 'function'
+            ? window.ExilioApp.executeCommand(value)
+            : Promise.reject(new Error('executeCommand indisponível'));
+        } catch (error) {
+          execution = Promise.reject(error);
+        }
+
         Promise.resolve(execution)
-          .catch(() => window.ExilioApp.typeTerminalLines([
-            { text: 'Falha ao executar o comando.', className: 'console-line alert-message' }
-          ]))
+          .catch(() => {
+            const errorLines = [
+              { text: 'Falha ao executar o comando.', className: 'console-line alert-message' }
+            ];
+
+            if (window.ExilioApp && typeof window.ExilioApp.typeTerminalLines === 'function') {
+              return window.ExilioApp.typeTerminalLines(errorLines);
+            }
+
+            return typeTerminalLines(errorLines);
+          })
           .finally(() => {
             input.focus();
             resolve();
@@ -470,14 +488,22 @@
       return copied;
     };
 
-    copyText().then((copied) => {
-      button.textContent = copied ? 'Copiado!' : 'Falha';
-      button.classList.toggle('is-copied', copied);
-      setTimeout(() => {
-        button.textContent = 'Copiar saída';
+    copyText()
+      .then((copied) => {
+        button.textContent = copied ? 'Copiado!' : 'Falha';
+        button.classList.toggle('is-copied', copied);
+        setTimeout(() => {
+          button.textContent = 'Copiar saída';
+          button.classList.remove('is-copied');
+        }, 1400);
+      })
+      .catch(() => {
+        button.textContent = 'Falha';
         button.classList.remove('is-copied');
-      }, 1400);
-    });
+        setTimeout(() => {
+          button.textContent = 'Copiar saída';
+        }, 1400);
+      });
   }
 
   function setupTerminalInput() {
@@ -576,6 +602,20 @@
   window.addEventListener('boot:complete', () => {
     const input = document.getElementById('terminal-input');
     if (input) input.focus();
+  });
+
+  window.addEventListener('beforeunload', () => {
+    if (state.scrollRafId) {
+      cancelAnimationFrame(state.scrollRafId);
+      state.scrollRafId = 0;
+    }
+
+    if (state.inputResizeRafId) {
+      cancelAnimationFrame(state.inputResizeRafId);
+      state.inputResizeRafId = 0;
+    }
+
+    state.pendingInputForResize = null;
   });
 
   window.ExilioApp = window.ExilioApp || {};
